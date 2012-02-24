@@ -1,0 +1,51 @@
+{var title = 'Sestava'}
+
+{block content}
+
+<div class="squad">
+    <div class="squad-header">Brankáři</div>
+    <table class="squad">
+	{foreach $goalkeepers as $player}
+	<tr>
+	    <td class="name"><a href="{link Player:single $player->id}">{$player->name} {$player->surname}</a></td>
+	    <td>{$player->birth|date:'d.m.Y'}</td>
+	    <td>{$player->birth|age}</td>
+	</tr>
+	{/foreach}
+    </table>
+
+    <div class="squad-header">Obránci</div>
+    <table class="squad">
+	{foreach $defenders as $player}
+	<tr>
+	    <td class="name"><a href="{link Player:single $player->id}">{$player->name} {$player->surname}</a></td>
+	    <td>{$player->birth|date:'d.m.Y'}</td>
+	    <td>{$player->birth|age}</td>
+	</tr>
+	{/foreach}
+    </table>
+
+    <div class="squad-header">Záložníci</div>
+    <table class="squad">
+	{foreach $midfielders as $player}
+	<tr>
+	    <td class="name"><a href="{link Player:single $player->id}">{$player->name} {$player->surname}</a></td>
+	    <td>{$player->birth|date:'d.m.Y'}</td>
+	    <td>{$player->birth|age}</td>
+	</tr>
+	{/foreach}
+    </table>
+
+    <div class="squad-header">Útočníci</div>
+    <table class="squad">
+	{foreach $forwards as $player}
+	<tr>
+	    <td class="name"><a href="{link Player:single $player->id}">{$player->name} {$player->surname}</a></td>
+	    <td>{$player->birth|date:'d.m.Y'}</td>
+	    <td>{$player->birth|age}</td>
+	</tr>
+	{/foreach}
+    </table>
+</div>
+
+{/block}

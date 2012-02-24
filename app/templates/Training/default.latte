@@ -1,0 +1,22 @@
+{var $title = 'Tréninky'}
+
+{block content}
+
+<h1>{$title} {$currentSeason}</h1>
+
+<table>
+    <tr>
+	<th>Datum</th>
+	<th>Popis</th>
+	<th>Detaily</th>
+	<th>Účast</th>
+    </tr>
+{foreach $trainings as $training}
+    <tr>
+	<td><a href="{link Training:single $training->id}">{$training->date|date:'d.m.Y H:i'}</a></td>
+	<td>{$training->title}</td>
+	<td>{$training->description}</td>
+	<td>{$training->related('player_training')->count('*')}</td>
+    </tr>
+{/foreach}
+</table>

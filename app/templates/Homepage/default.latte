@@ -1,0 +1,24 @@
+{block content}
+
+{snippet articles}
+
+{foreach $articles as $article}
+<div class="article">
+    <img src="{$basePath}/images/articles/training-night.jpg"/>
+    <h2><a href="{link Article: $article->id}">{$article->title}</a></h2>
+    <div class="info">
+	<span class="created">{$article->created|date:'j.n.Y H:i'}</span>
+	<span class="delimiter">|</span>
+	<span class="category">{$article->category->name}</span>
+	<span class="delimiter">|</span>
+	<span class="author">{$article->user->name}</span>
+    </div>
+    <p class="text">{$article->text|truncate:240}</p>
+</div>
+{/foreach}
+
+{control vp}
+
+{/snippet}
+
+{/block}

@@ -1,0 +1,13 @@
+{var $title = $article->title}
+
+{block content}
+
+<div class="article-full">
+    <h1>{$article->title}</h1>
+    <div class="info">
+	<span class="created"><strong>Vydáno: </strong>{$article->created|date:'j.n.Y H:i'}</span>
+	<span class="category"><strong>Kategorie: </strong>{$article->category->name}</span>
+	<span class="author"><strong>Autor: </strong>{$article->user->name}</span>
+    </div>
+    <div class="text">{$article->text}</div>
+</div>

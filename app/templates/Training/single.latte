@@ -1,0 +1,31 @@
+{var $date = date('d.m.Y', strtotime($training->date))}
+{var $title = 'Trénink ' . $date}
+
+{block content}
+
+<h1>{$title}</h1>
+
+<div class="training-info">
+    <table>
+	<tr>
+	    <td class="title">Sezona: </td>
+	    <td>{$training->season->name}</td>
+	</tr>
+	<tr>
+	    <td class="title">Čas: </td>
+	    <td>{$training->date|date:'H:i'}</td>
+	</tr>
+	<tr>
+	    <td class="title">Popis: </td>
+	    <td>{$training->title}</td>
+	</tr>
+	<tr>
+	    <td class="title">Detaily: </td>
+	    <td>{$training->description}</td>
+	</tr>
+    </table>
+</div>
+
+{control playerList}
+
+{/block}

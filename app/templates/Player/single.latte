@@ -1,0 +1,25 @@
+{var $fullName = $player->name . ' ' . $player->surname}
+{var $title = $fullName}
+
+{block content}
+
+{if $player->photo}
+    {var $photo = $fullName}
+{else}
+    {var $photo = 'no-photo'}
+{/if}
+
+<div class="player-profile">
+    <h1>{$fullName}</h1>
+    <div class="player-info">
+	<div class="player-photo"><img src="{$basePath}/images/players/{$photo|webalize}.png"/></div>
+	<div class="player-details">
+	    <table>
+		<tr><td class="title">Datum narození:</td><td>{$player->birth|date:'d.m.Y'}</td></tr>
+		<tr><td class="title">Věk:</td><td>{$player->birth|age}</td></tr>
+		<tr><td class="title">Pozice:</td><td>{$player->position->name}</td></tr>
+		<tr><td class="title">Klub:</td><td>{$player->team->name}</td></tr>
+	    </table>
+	</div>
+    </div>
+</div>

@@ -1,0 +1,95 @@
+{**
+ * My Application layout template.
+ *
+ * @copyright  Copyright (c) 2010 John Doe
+ * @package    MyApplication
+ *
+ * @param string   $basePath web base path
+ * @param string   $robots   tell robots how to index the content of a page (optional)
+ * @param array    $flashes  flash messages
+ *}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+	<meta name="description" content="Oficiální stránky fotbalového klubu Sokol Věteřov.">
+	<meta name="robots" content="{$robots}" n:ifset="$robots">
+
+	<title>{ifset $title}{$title} &#124; {/ifset}Sokol Věteřov</title>
+
+	<link rel="stylesheet" href="{$basePath}/css/reset.css" />
+	<link rel="stylesheet" href="{$basePath}/css/text.css" />
+	<link rel="stylesheet" href="{$basePath}/css/960.css" />
+	<link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/css/screen.css" type="text/css">
+	<link rel="stylesheet" media="print" href="{$basePath}/css/print.css" type="text/css">
+	<link rel="shortcut icon" href="{$basePath}/favicon.ico" type="image/x-icon">
+	<link rel="stylesheet/less" type="text/css" href="{$basePath}/css/style.less">
+	<link type="text/css" href="{$basePath}/css/ui-lightness/jquery-ui-1.8.17.custom.css" rel="Stylesheet" />
+	
+	<script type="text/javascript" src="{$basePath}/js/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript" src="{$basePath}/js/jquery-ui-1.8.17.custom.min.js"></script>
+	<script type="text/javascript" src="{$basePath}/js/netteForms.js"></script>
+	<script type="text/javascript" src="{$basePath}/js/less-1.2.1.min.js"></script>
+	
+	<script type='text/javascript' src="{$basePath}/js/jquery-ui-timepicker-addon.js"></script>
+	<script type='text/javascript' src="{$basePath}/js/dateInput.js"></script>
+	<link rel="stylesheet" type="text/css" href="{$basePath}/css/jquery-ui-timepicker-addon.css">
+	<link rel="stylesheet" type="text/css" href="{$basePath}/css/dateInput.css">
+	
+	<script type="text/javascript" src="{$basePath}/js/scripts.js"></script>
+	<script type="text/javascript" src="{$basePath}/js/ajax.js"></script>
+	
+	{block head}{/block}
+</head>
+
+<body>
+
+    <div class="container_12">
+	
+	<div class="grid_12" id="header">
+	    <div class="grid_8 alpha page-title">
+		<a href="{link Homepage: }"></a>
+	    </div>
+	    <div class="grid_4 omega login-search">
+		<div class="user">
+		{if $user->isLoggedIn()}
+		    <span class="name">{$user->getIdentity()->name}</span> |
+		    <a n:href="signOut!">Odhlásit</a>
+		{else}
+		    <a href="{link Sign:in}">Přihlásit</a>
+		{/if}
+		</div>
+	    </div>
+	</div>
+	<div class="clear"></div>
+	
+	<div class="grid_12" id="navigation">
+	    <ul class="menu">
+		{foreach $menu as $url => $title}
+		    <li class="menu-item"><a href="{link $url 'id' => NULL}">{$title}</a></li>
+		{/foreach}
+	    </ul>
+	</div>
+	<div class="clear"></div>
+    
+	<div class="grid_8" id="content">
+	    {snippet flashMessages}
+	    <div n:foreach="$flashes as $flash" class="flash {$flash->type}">{$flash->message}</div>
+	    {/snippet}
+	    
+	    {include #content}
+	</div>
+	
+	<div class="grid_4" id="sidebar">
+	    <div class="inner-wrapper">Sidebar</div>
+	</div>
+	<div class="clear"></div>
+	
+	<div class="grid_12" id="footer">Potty © 2012</div>
+	
+    </div>
+    
+</body>
+</html>

@@ -1,0 +1,18 @@
+{snippet}
+
+<h2>Účast</h2>
+
+<table>
+
+    {foreach $players as $player}
+    <tr n:class="$isParticipate[$player->id] ? participating : not-participating">
+	<td>{$player->surname} {$player->name}</td>
+	<td>{$isParticipate[$player->id] ? 'Ano' : 'Ne'}</td>
+	{if $user->isInRole('admin')}
+	<td><a n:href="participate! $trainingId, $player->id, $isParticipate[$player->id]" class="icon change ajax">změnit</a></td>
+	{/if}
+    </tr>
+    {/foreach}
+    
+</table>
+{/snippet}
