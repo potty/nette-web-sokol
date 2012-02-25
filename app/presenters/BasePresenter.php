@@ -20,7 +20,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
     public $menu = array (
 	'Homepage:' => 'Domů',
 	//'Homepage:' => 'Články',
-	//'Homepage:' => 'Zápasy',
+	'Match:' => 'Zápasy',
 	'Player:' => 'Sestava',
 	//'Stats:' => 'Statistiky',
 	'Training:' => 'Tréninky',

@@ -159,7 +159,6 @@ if (!empty($_control->snippetMode)) {
 
 		$parent = $destination === 'parent';
 		if ($destination === 'parent' || $destination === 'this') {
-			$item = $node->parentNode;
 			for ($item = $node->parentNode; $item && $item->name !== 'block' && !isset($item->data->name); $item = $item->parentNode);
 			if (!$item) {
 				throw new CompileException("Cannot include $destination block outside of any block.");
@@ -315,7 +314,7 @@ if (!empty($_control->snippetMode)) {
 	public function macroBlockEnd(MacroNode $node, $writer)
 	{
 		if (isset($node->data->name)) { // block, snippet, define
-			if ($node->name === 'snippet' && isset($node->htmlNode->macroAttrs['snippet']) // n:snippet -> n:inner-snippet
+			if ($node->name === 'snippet' && $node->htmlNode && !$node->prefix // n:snippet -> n:inner-snippet
 				&& preg_match("#^(.*? n:\w+>\n?)(.*?)([ \t]*<[^<]+)$#sD", $node->content, $m))
 			{
 				$node->openingCode = $m[1] . $node->openingCode;
@@ -507,17 +506,24 @@ if (!empty($_control->snippetMode)) {
 				if ($snippets) {
 					$payload->snippets += $snippets;
 					unset($payload->snippets[$id]);
-			}
-		}
-		}
-		if ($control instanceof Nette\Application\UI\Control) {
-			foreach ($control->getComponents(FALSE, 'Nette\Application\UI\Control') as $child) {
-				if ($child->isControlInvalid()) {
-					$child->snippetMode = TRUE;
-					$child->render();
-					$child->snippetMode = FALSE;
 				}
 			}
+		}
+		if ($control instanceof Nette\Application\UI\IRenderable) {
+			$queue = array($control);
+			do {
+				foreach (array_shift($queue)->getComponents() as $child) {
+					if ($child instanceof Nette\Application\UI\IRenderable) {
+						if ($child->isControlInvalid()) {
+							$child->snippetMode = TRUE;
+							$child->render();
+							$child->snippetMode = FALSE;
+						}
+					} elseif ($child instanceof Nette\ComponentModel\IContainer) {
+						$queue[] = $child;
+					}
+				}
+			} while ($queue);
 		}
 	}
 

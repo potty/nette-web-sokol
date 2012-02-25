@@ -1,2 +1,22 @@
+{var $title = 'Zápasy'}
 
 {block content}
+
+<h1>{$title} {$currentSeason}</h1>
+
+<table>
+    <tr>
+	<th>Datum</th>
+	<th>Domácí</th>
+	<th>Hosté</th>
+	<th>Skóre</th>
+    </tr>
+{foreach $matches as $match}
+    <tr>
+	<td>{$match->date|date:'d.m.Y H:i'}</td>
+	<td>{$match->ref('team', 'home_id')->name}</td>
+	<td>{$match->ref('team', 'away_id')->name}</td>
+	<td>{$match->score_home}:{$match->score_away}</td>
+    </tr>
+{/foreach}
+</table>}

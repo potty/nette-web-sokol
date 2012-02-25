@@ -86,5 +86,15 @@ class Model extends Nette\Object
     {
 	return $this->database->table('player_training');
     }
+    
+    public function getCompetitions()
+    {
+	return $this->database->table('competition');
+    }
+   
+    public function getMatches()
+    {
+	return $this->database->table('match');
+    }
 
 }

@@ -17,6 +17,7 @@ class AclModel
 	$this->acl->addResource('homepage');
 	$this->acl->addResource('player');
 	$this->acl->addResource('training');
+	$this->acl->addResource('match');
 	
 	$this->acl->allow('guest', array('sign', 'homepage', 'article', 'player'), array('in', 'default', 'single'));
 	$this->acl->allow('member', array('sign', 'training'), array('out', 'default', 'single'));

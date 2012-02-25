@@ -575,7 +575,7 @@ abstract class Presenter extends Control implements Application\IPresenter
 	/**
 	 * @return stdClass
 	 */
-	final public function getPayload()
+	public function getPayload()
 	{
 		return $this->payload;
 	}
@@ -963,13 +963,7 @@ abstract class Presenter extends Control implements Application\IPresenter
 
 			$globalState = $this->getGlobalState($destination === 'this' ? NULL : $presenterClass);
 			if ($current && $args) {
-				$tmp = $globalState + $this->params;
-				foreach ($args as $key => $val) {
-					if ((string) $val !== (isset($tmp[$key]) ? (string) $tmp[$key] : '')) {
-						$current = FALSE;
-						break;
-					}
-				}
+				$current = http_build_query($globalState + $this->params) === http_build_query($args);
 			}
 			$args += $globalState;
 		}
@@ -1273,11 +1267,13 @@ abstract class Presenter extends Control implements Application\IPresenter
 		}
 
 		foreach ($params as $key => $value) {
-			$a = strlen($key) > 2 ? strrpos($key, self::NAME_SEPARATOR, -2) : FALSE;
-			if (!$a) {
+			if (!preg_match('#^((?:[a-z0-9_]+-)*)((?!\d+$)[a-z0-9_]+)$#i', $key, $matches)) {
+				$this->error("'Invalid parameter name '$key'");
+			}
+			if (!$matches[1]) {
 				$selfParams[$key] = $value;
 			} else {
-				$this->globalParams[substr($key, 0, $a)][substr($key, $a + 1)] = $value;
+				$this->globalParams[substr($matches[1], 0, -1)][$matches[2]] = $value;
 			}
 		}
 
