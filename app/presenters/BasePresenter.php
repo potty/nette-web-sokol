@@ -11,7 +11,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
 
     protected $model;
     protected $currentSeason;
-    private $acl = null;
+    protected $acl = null;
     
     /**
      * Seznam polozek menu
@@ -36,23 +36,22 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
 	
 	if (!$this->getUser()->isLoggedIn()) {
 	    if ($this->getUser()->isInRole('guest')) {
-		$acl = new AclModel();
-		if (!$acl->isAllowed('guest', strtolower($this->name), $this->action)) {
+		$this->acl = new AclModel();
+		if (!$this->acl->isAllowed('guest', strtolower($this->name), $this->action)) {
 		    $this->flashMessage('Do této části aplikace nemáte přístup. Byl jste přesměrován.');
 		    $this->redirect('Homepage:');
 		}
 	    }
 	} else {
-	    $acl = new AclModel();
+	    $this->acl = new AclModel();
 	    $roles = $this->getUser()->getIdentity()->getRoles();
 	    $role = array_shift($roles);
 
-	    if (!$acl->isAllowed($role, strtolower($this->name), $this->action)) {
+	    if (!$this->acl->isAllowed($role, strtolower($this->name), $this->action)) {
 		$this->flashMessage('Do této části aplikace nemáte přístup. Byl jste přesměrován.');
 		$this->redirect('Homepage:');
 	    }
 	}
-	
     }
     
     protected function createTemplate($class = NULL)

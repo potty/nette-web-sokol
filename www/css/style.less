@@ -159,25 +159,27 @@ A {
 TABLE {
     border-collapse: collapse;
     width: 90%;
-    TR {
-	&:hover {
-	    background-color: darken(#fff, 5%);
+    &.format {
+	TR {
+	    &:hover {
+		background-color: darken(#fff, 5%);
+	    }
+	    &.not-participating {
+		color: lighten(@color, 30%);
+	    }
+	    &.participating {
+		color: #49d100;
+	    }
 	}
-	&.not-participating {
-	    color: lighten(@color, 30%);
-	}
-	&.participating {
-	    color: #49d100;
-	}
-    }
-    TH {
-	border-bottom: 3px solid @border;
-	font-weight: bold;
-    }
-    TD {
-	border-bottom: 1px solid @border;
-	&.title {
+	TH {
+	    border-bottom: 3px solid @border;
 	    font-weight: bold;
+	}
+	TD {
+	    border-bottom: 1px solid @border;
+	    &.title {
+		font-weight: bold;
+	    }
 	}
     }
     &.squad {

@@ -4,7 +4,7 @@
 
 <div class="squad">
     <div class="squad-header">Brankáři</div>
-    <table class="squad">
+    <table class="squad format">
 	{foreach $goalkeepers as $player}
 	<tr>
 	    <td class="name"><a href="{link Player:single $player->id}">{$player->name} {$player->surname}</a></td>
@@ -15,7 +15,7 @@
     </table>
 
     <div class="squad-header">Obránci</div>
-    <table class="squad">
+    <table class="squad format">
 	{foreach $defenders as $player}
 	<tr>
 	    <td class="name"><a href="{link Player:single $player->id}">{$player->name} {$player->surname}</a></td>
@@ -26,7 +26,7 @@
     </table>
 
     <div class="squad-header">Záložníci</div>
-    <table class="squad">
+    <table class="squad format">
 	{foreach $midfielders as $player}
 	<tr>
 	    <td class="name"><a href="{link Player:single $player->id}">{$player->name} {$player->surname}</a></td>
@@ -37,7 +37,7 @@
     </table>
 
     <div class="squad-header">Útočníci</div>
-    <table class="squad">
+    <table class="squad format">
 	{foreach $forwards as $player}
 	<tr>
 	    <td class="name"><a href="{link Player:single $player->id}">{$player->name} {$player->surname}</a></td>
