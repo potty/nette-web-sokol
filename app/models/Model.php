@@ -96,5 +96,10 @@ class Model extends Nette\Object
     {
 	return $this->database->table('match');
     }
+    
+    public function getPlayersMatches()
+    {
+	return $this->database->table('player_match');
+    }
 
 }

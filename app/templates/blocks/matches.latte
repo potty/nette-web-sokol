@@ -1,0 +1,37 @@
+<div class="block">
+
+    <div class="title">Minulý zápas</div>
+    
+    <table>
+    {foreach $lastMatch as $match}
+	<tr>
+	    <td colspan="3">{$match->date|date:'d.m.Y H:i'}</td>
+	</tr>
+	<tr>
+	    <td>{$match->ref('team', 'home_id')->name}</td>
+	    <td><a href="{link Match:single $match->id}">{$match->score_home} : {$match->score_away}</a></td>
+	    <td>{$match->ref('team', 'away_id')->name}</td>
+	</tr>
+    {/foreach}
+    </table>
+    
+</div>
+
+<div class="block">
+
+    <div class="title">Příští zápas</div>
+    
+    <table>
+    {foreach $nextMatch as $match}
+	<tr>
+	    <td colspan="3">{$match->date|date:'d.m.Y H:i'}</td>
+	</tr>
+	<tr>
+	    <td>{$match->ref('team', 'home_id')->name}</td>
+	    <td>{$match->score_home} : {$match->score_away}</td>
+	    <td>{$match->ref('team', 'away_id')->name}</td>
+	</tr>
+    {/foreach}
+    </table>
+    
+</div>

@@ -1,0 +1,14 @@
+{snippet}
+
+<h2>Sestava (počet hráčů: {$counter})</h2>
+
+<table class="format">
+
+    {foreach $players as $player}
+    <tr>
+	<td>{$player->player->surname} {$player->player->name}</td>
+    </tr>
+    {/foreach}
+    
+</table>
+{/snippet}

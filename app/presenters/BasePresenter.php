@@ -68,6 +68,14 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
     public function beforeRender()
     {
 	$this->template->menu = $this->menu;
+	$this->template->lastMatch = $this->model->getMatches()
+		->where('played = ?', 1)
+		->order('date DESC')
+		->limit(1);
+	$this->template->nextMatch = $this->model->getMatches()
+		->where('played = ?', 0)
+		->order('date ASC')
+		->limit(1);
 	if ($this->isAjax()) {
 	    $this->invalidateControl('flashMessages');
 	}

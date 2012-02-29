@@ -1,0 +1,8 @@
+{var $title = $match->ref('team', 'home_id')->name . ' - ' . $match->ref('team', 'away_id')->name . ' ' . $match->score_home . ':' . $match->score_away}
+
+{block content}
+
+<div class="player-profile">
+    <h1>{$title}</h1>
+    
+</div>

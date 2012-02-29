@@ -11,6 +11,7 @@ use Vodacek\Forms\Controls\DateInput;
 class MatchPresenter extends BasePresenter {
 
     private $match;
+    private $id;
     
     public function renderDefault() {
 	$this->template->matches = $this->model->getMatches()->order('date ASC');
@@ -25,7 +26,21 @@ class MatchPresenter extends BasePresenter {
 	if ($this->match === FALSE) {
 	    $this->setView('notFound');
 	}
+	$this->id = $id;
 	$this['matchEditForm']->setDefaults($this->match);
+    }
+    
+    public function actionSingle($id)
+    {
+	$this->match = $this->model->getMatches()->find($id)->fetch();
+	if ($this->match === FALSE) {
+	    $this->setView('notFound');
+	}
+    }
+    
+    public function renderSingle()
+    {
+	$this->template->match = $this->match;
     }
     
     protected function createComponentMatchAddForm()
@@ -112,6 +127,60 @@ class MatchPresenter extends BasePresenter {
 	$this->model->getMatches()->find($form->values->id)->update($data);
 	$this->flashMessage('Zápas aktualizován.', 'success');
 	$this->redirect('Match:');
+    }
+    
+    /**
+     * Returns array of pairs 'id' => 'player_surname player_name' 
+     * @return array 
+     */
+    private function fetchPairsPlayers()
+    {
+	$array = array();
+	$players = $this->model->getPlayers()->where('team.name = ?', 'Věteřov')->order('surname ASC');
+	foreach ($players as $player) {
+	    $array[$player->id] = $player->surname . ' ' . $player->name;
+	}
+	return $array;
+    }
+    
+    protected function createComponentAddPlayerToMatchForm()
+    {
+	$form = new Form();
+	$form->addSelect('player_id', 'Hráč', $this->fetchPairsPlayers())
+		->addRule(Form::FILLED, 'Je nutné vybrat hráče.');
+	$form->addSubmit('add', 'Přidat');
+	$form->onSuccess[] = callback($this, 'addPlayerToMatchFormSubmitted');
+	return $form;
+    }
+    
+    public function addPlayerToMatchFormSubmitted(Form $form)
+    {
+	if ($this->model->getPlayersMatches()->where('match_id', $this->matchId)->count('*') < 11) {
+	    $data = array(
+		'player_id' => $form->values->player_id,
+		'match_id' => $this->match->id,
+	    );
+	    $this->model->getPlayersMatches()->insert($data);
+	    if (!$this->isAjax()) {
+		$this->redirect('this');
+	    } else {
+		$form->setValues(array(), true);
+		$this->invalidateControl('form');
+		$this['startingEleven']->invalidateControl();
+	    }
+	} else {
+	    $this->flashMessage('Nelze přidat více hráčů než 11!', 'error');  
+	}
+    }
+    
+    /**
+     * Creates component PlayerList of Veterov players
+     * @return PlayerList 
+     */
+    protected function createComponentStartingEleven()
+    {
+	$players = $this->model->getPlayersMatches()->where('match_id', $this->id)->order('player.surname ASC');
+	return new StartingEleven($players, $this->id, $this->model);
     }
 
 }

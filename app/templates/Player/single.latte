@@ -14,7 +14,7 @@
     <div class="player-info">
 	<div class="player-photo"><img src="{$basePath}/images/players/{$photo|webalize}.png"/></div>
 	<div class="player-details">
-	    <table>
+	    <table class="format">
 		<tr><td class="title">Datum narození:</td><td>{$player->birth|date:'d.m.Y'}</td></tr>
 		<tr><td class="title">Věk:</td><td>{$player->birth|age}</td></tr>
 		<tr><td class="title">Pozice:</td><td>{$player->position->name}</td></tr>

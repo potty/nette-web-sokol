@@ -23,7 +23,7 @@
 	<td>{$match->round}</td>
 	<td>{$match->ref('team', 'home_id')->name}</td>
 	<td>{$match->ref('team', 'away_id')->name}</td>
-	<td>{$match->score_home}:{$match->score_away}</td>
+	<td><a href="{link Match:single $match->id}">{$match->score_home}:{$match->score_away}</a></td>
 	{if $allowedEdit}
 	<td><a href="{link Match:edit $match->id}">Upravit</a></td>
 	{/if}

@@ -50,7 +50,7 @@
 	
 	<div class="grid_12" id="header">
 	    <div class="grid_8 alpha page-title">
-		<a href="{link Homepage: }">Sokol Věteřov</a>
+		<a href="{link Homepage: }"></a>
 	    </div>
 	    <div class="grid_4 omega login-search">
 		<div class="user">
@@ -83,7 +83,9 @@
 	</div>
 	
 	<div class="grid_4" id="sidebar">
-	    <div class="inner-wrapper">Sidebar</div>
+	    <div class="inner-wrapper">
+		{include './blocks/matches.latte', lastMatch => $lastMatch}
+	    </div>
 	</div>
 	<div class="clear"></div>
 	

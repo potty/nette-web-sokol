@@ -6,4 +6,20 @@
 
 {control matchEditForm}
 
+<h2>Přidání hráče</h2>
+
+{snippet form}
+    {form addPlayerToMatchForm class => ajax}
+    <div class="player-add-form">
+        {control $form errors}
+
+        {input player_id} {input add}
+    </div>
+    {/form}
+{/snippet}
+
+
+{control startingEleven}
+
+
 {/block}
