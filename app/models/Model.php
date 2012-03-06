@@ -101,5 +101,20 @@ class Model extends Nette\Object
     {
 	return $this->database->table('player_match');
     }
+    
+    public function getEventTypes()
+    {
+	return $this->database->table('event_type');
+    }
+   
+    public function getEvents()
+    {
+	return $this->database->table('event');
+    }
+    
+    public function getSubstitutions()
+    {
+	return $this->database->table('substitution');
+    }
 
 }

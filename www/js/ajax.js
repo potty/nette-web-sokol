@@ -21,5 +21,3 @@ $('form.ajax').live('submit', function (event) {
     event.preventDefault();
     $.post(this.action, $(this).serialize());
 });
-
-

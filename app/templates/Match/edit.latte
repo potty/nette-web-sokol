@@ -6,18 +6,10 @@
 
 {control matchEditForm}
 
-<h2>Přidání hráče</h2>
-
-{snippet form}
-    {form addPlayerToMatchForm class => ajax}
-    <div class="player-add-form">
-        {control $form errors}
-
-        {input player_id} {input add}
-    </div>
-    {/form}
-{/snippet}
-
+<div class="links">
+    <a href="{link Match:addEvent $matchId}">Přidat událost</a>
+    <a href="{link Match:addSubs $matchId}">Přidat střídání</a>
+</div>
 
 {control startingEleven}
 

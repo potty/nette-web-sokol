@@ -10,6 +10,7 @@
 	<th>Soutěž</th>
 	<th>Kolo</th>
 	<th>Domácí</th>
+	<th></th>
 	<th>Hosté</th>
 	<th>Skóre</th>
 	{if $allowedEdit}
@@ -22,6 +23,7 @@
 	<td>{$match->competition->name}</td>
 	<td>{$match->round}</td>
 	<td>{$match->ref('team', 'home_id')->name}</td>
+	<td>&nbsp;-&nbsp;</td>
 	<td>{$match->ref('team', 'away_id')->name}</td>
 	<td><a href="{link Match:single $match->id}">{$match->score_home}:{$match->score_away}</a></td>
 	{if $allowedEdit}

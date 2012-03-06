@@ -38,9 +38,32 @@ class MatchPresenter extends BasePresenter {
 	}
     }
     
+    public function actionAddSubs($id)
+    {
+	$this->match = $this->model->getMatches()->find($id)->fetch();
+	if ($this->match === FALSE) {
+	    $this->setView('notFound');
+	}
+	$this->id = $id;
+    }
+    
+    public function actionAddEvent($id)
+    {
+	$this->match = $this->model->getMatches()->find($id)->fetch();
+	if ($this->match === FALSE) {
+	    $this->setView('notFound');
+	}
+	$this->id = $id;
+    }
+    
     public function renderSingle()
     {
 	$this->template->match = $this->match;
+    }
+    
+    public function renderEdit()
+    {
+	$this->template->matchId = $this->id;
     }
     
     protected function createComponentMatchAddForm()
@@ -51,8 +74,7 @@ class MatchPresenter extends BasePresenter {
 	$form['seasonId']->setDefaultValue($this->currentSeason);
 	$form->addSelect('competitionId', 'Soutěž:', $this->model->getCompetitions()->fetchPairs('id', 'name'))
 		->addRule(Form::FILLED, 'Je nutné vybrat soutěž.');
-	$form->addText('round', 'Kolo:', 40, 100)
-		->addRule(Form::FILLED, 'Je nutné zadat kolo.');
+	$form->addText('round', 'Kolo:', 40, 100);
 	$form->addDate('date', 'Datum:', DateInput::TYPE_DATETIME)
                                 ->setRequired('Uveďte datum.');
 	$form->addSelect('homeId', 'Domácí:', $this->model->getTeams()->order('name ASC')->fetchPairs('id', 'name'))
@@ -89,8 +111,7 @@ class MatchPresenter extends BasePresenter {
 		->addRule(Form::FILLED, 'Je nutné vybrat sezonu.');
 	$form->addSelect('competition_id', 'Soutěž:', $this->model->getCompetitions()->fetchPairs('id', 'name'))
 		->addRule(Form::FILLED, 'Je nutné vybrat soutěž.');
-	$form->addText('round', 'Kolo:', 40, 100)
-		->addRule(Form::FILLED, 'Je nutné zadat kolo.');
+	$form->addText('round', 'Kolo:', 40, 100);
 	$form->addDate('date', 'Datum:', DateInput::TYPE_DATETIME)
                                 ->setRequired('Uveďte datum.');
 	$form->addSelect('home_id', 'Domácí:', $this->model->getTeams()->order('name ASC')->fetchPairs('id', 'name'))
@@ -122,11 +143,73 @@ class MatchPresenter extends BasePresenter {
 	    'played' => $form->values->played,
 	);
 	if ($form->values->round != '') $data['round'] = $form->values->round;
-	if ($form->values->round != '') $data['score_home'] = $form->values->score_home;
-	if ($form->values->round != '') $data['score_away'] = $form->values->score_away;
+	if ($form->values->score_home != '') $data['score_home'] = $form->values->score_home;
+	if ($form->values->score_away != '') $data['score_away'] = $form->values->score_away;
 	$this->model->getMatches()->find($form->values->id)->update($data);
 	$this->flashMessage('Zápas aktualizován.', 'success');
 	$this->redirect('Match:');
+    }
+    
+    protected function createComponentEventAddForm()
+    {
+	$form = new Form();
+	$form->addHidden('match_id', $this->id);
+	$form->addSelect('event_type_id', 'Typ:', $this->model->getEventTypes()->order('id ASC')->fetchPairs('id', 'name'))
+		->addRule(Form::FILLED, 'Je nutné zadat typ.');
+	$form->addText('minute', 'Minuta:')
+		->setType('number')
+		->addRule(Form::INTEGER, 'Minuta musí být číslo')
+		->addRule(Form::RANGE, 'Minuta musí být od 1 do 90', array(1, 90));
+	$form->addSelect('player_id', 'Hráč:', $this->fetchPairsPlayers())
+		->addRule(Form::FILLED, 'Je nutné vybrat hráče.');
+	$form->addCheckbox('penalty', 'Penalta');
+	$form->addSubmit('save', 'Uložit');
+	$form->onSuccess[] = callback($this, 'eventAddFormSubmitted');
+	return $form;
+    }
+    
+    public function eventAddFormSubmitted(Form $form)
+    {
+	$data = array(
+	    'match_id' => $form->values->match_id,
+	    'event_type_id' => $form->values->event_type_id,
+	    'player_id' => $form->values->player_id,
+	);
+	if ($form->values->minute != '') $data['minute'] = $form->values->minute;
+	if ($form->values->penalty != '') $data['penalty'] = $form->values->penalty;
+	$this->model->getEvents()->insert($data);
+	$this->flashMessage('Událost přidána.', 'success');
+	$this->redirect('Match:edit', $form->values->match_id);
+    }
+    
+    protected function createComponentSubstitutionAddForm()
+    {
+	$form = new Form();
+	$form->addHidden('match_id', $this->id);
+	$form->addText('minute', 'Minuta:')
+		->setType('number')
+		->addRule(Form::INTEGER, 'Minuta musí být číslo')
+		->addRule(Form::RANGE, 'Minuta musí být od 1 do 90', array(1, 90));
+	$form->addSelect('player_in_id', 'Hráč do hry:', $this->fetchPairsPlayers())
+		->addRule(Form::FILLED, 'Je nutné vybrat hráče.');
+	$form->addSelect('player_out_id', 'Hráč ze hry:', $this->fetchPairsPlayers())
+		->addRule(Form::FILLED, 'Je nutné vybrat hráče.');
+	$form->addSubmit('save', 'Uložit');
+	$form->onSuccess[] = callback($this, 'substitutionAddFormSubmitted');
+	return $form;
+    }
+    
+    public function substitutionAddFormSubmitted()
+    {
+	$data = array(
+	    'match_id' => $form->values->match_id,
+	    'player_in_id' => $form->values->player_in_id,
+	    'player_out_id' => $form->values->player_out_id,
+	    'minute' => $form->values->minute,
+	);
+	$this->model->getSubstitutions()->insert($data);
+	$this->flashMessage('Střídání přidáno.', 'success');
+	$this->redirect('Match:edit', $form->values->match_id);
     }
     
     /**
@@ -143,44 +226,15 @@ class MatchPresenter extends BasePresenter {
 	return $array;
     }
     
-    protected function createComponentAddPlayerToMatchForm()
-    {
-	$form = new Form();
-	$form->addSelect('player_id', 'Hráč', $this->fetchPairsPlayers())
-		->addRule(Form::FILLED, 'Je nutné vybrat hráče.');
-	$form->addSubmit('add', 'Přidat');
-	$form->onSuccess[] = callback($this, 'addPlayerToMatchFormSubmitted');
-	return $form;
-    }
-    
-    public function addPlayerToMatchFormSubmitted(Form $form)
-    {
-	if ($this->model->getPlayersMatches()->where('match_id', $this->matchId)->count('*') < 11) {
-	    $data = array(
-		'player_id' => $form->values->player_id,
-		'match_id' => $this->match->id,
-	    );
-	    $this->model->getPlayersMatches()->insert($data);
-	    if (!$this->isAjax()) {
-		$this->redirect('this');
-	    } else {
-		$form->setValues(array(), true);
-		$this->invalidateControl('form');
-		$this['startingEleven']->invalidateControl();
-	    }
-	} else {
-	    $this->flashMessage('Nelze přidat více hráčů než 11!', 'error');  
-	}
-    }
-    
     /**
      * Creates component PlayerList of Veterov players
      * @return PlayerList 
      */
     protected function createComponentStartingEleven()
     {
-	$players = $this->model->getPlayersMatches()->where('match_id', $this->id)->order('player.surname ASC');
-	return new StartingEleven($players, $this->id, $this->model);
+	$db = $this->context->database;
+	$players = $this->model->getPlayers()->where('team.name', 'Věteřov')->order('surname ASC', 'name ASC');
+	return new StartingEleven($players, $this->id, $this->model, $db);
     }
 
 }

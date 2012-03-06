@@ -77,7 +77,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
 		->order('date ASC')
 		->limit(1);
 	if ($this->isAjax()) {
-	    $this->invalidateControl('flashMessages');
+	    $this->invalidateControl('flash');
 	}
     }
     

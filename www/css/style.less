@@ -157,6 +157,7 @@ A {
 }
 
 TABLE {
+    @green: #49d100;
     border-collapse: collapse;
     width: 90%;
     &.format {
@@ -166,9 +167,15 @@ TABLE {
 	    }
 	    &.not-participating {
 		color: lighten(@color, 30%);
+		a {
+		    color: lighten(@color, 30%);
+		}
 	    }
 	    &.participating {
-		color: #49d100;
+		color: @green;
+		a {
+		    color: @green;
+		}
 	    }
 	}
 	TH {

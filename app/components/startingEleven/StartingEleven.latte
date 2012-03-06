@@ -5,8 +5,9 @@
 <table class="format">
 
     {foreach $players as $player}
-    <tr>
-	<td>{$player->player->surname} {$player->player->name}</td>
+    <tr n:class="$isParticipate[$player->id] ? participating : not-participating">
+	<td><a n:href="participate! $matchId, $player->id, $isParticipate[$player->id]" class="ajax">{$player->surname} {$player->name}</a></td>
+	<td>{if $isParticipate[$player->id]}{$numbers[$player->id]}{/if}</td>
     </tr>
     {/foreach}
     
