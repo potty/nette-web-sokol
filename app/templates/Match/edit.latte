@@ -14,4 +14,27 @@
 {control startingEleven}
 
 
+<h2>Události</h2>
+<table>
+{foreach $events as $event}
+    <tr>
+	<td>{$event->event_type->name}</td>
+	<td>{$event->minute}. min.</td>
+	<td>{$event->player->name} {$event->player->surname}</td>
+	<td>{if $event->penalty}(z pen.){/if}</td>
+    </tr>
+{/foreach}
+</table>
+    
+<h2>Střídání</h2>
+<table>
+{foreach $subs as $sub}
+    <tr>
+	<td>{$sub->minute}. min.</td>
+	<td>IN: {$sub->ref('player', 'player_in_id')->name} {$sub->ref('player', 'player_in_id')->surname}</td>
+	<td>OUT: {$sub->ref('player', 'player_out_id')->name} {$sub->ref('player', 'player_out_id')->surname}</td>
+    </tr>
+{/foreach}
+</table>
+
 {/block}

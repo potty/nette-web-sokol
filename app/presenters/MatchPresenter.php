@@ -13,11 +13,16 @@ class MatchPresenter extends BasePresenter {
     private $match;
     private $id;
     
-    public function renderDefault() {
-	$this->template->matches = $this->model->getMatches()->order('date ASC');
+    public function beforeRender() {
+	parent::beforeRender();
 	$result = $this->model->getSeasons()->select('name')->where('id', $this->currentSeason)->fetch();
 	$this->template->currentSeason = $result['name'];
 	$this->template->allowedEdit = $this->acl->isAllowed($this->user->identity->roles[0], 'match', 'edit');
+    }
+    
+    public function renderDefault() {
+	// get all Veterov matches (don't know how to implement string value instead index)
+	$this->template->matches = $this->model->getMatches()->where('home_id = ? OR away_id =?', 1, 1)->order('date ASC');
     }
     
     public function actionEdit($id)
@@ -64,6 +69,13 @@ class MatchPresenter extends BasePresenter {
     public function renderEdit()
     {
 	$this->template->matchId = $this->id;
+	$this->template->events = $this->model->getEvents()->where('match_id = ?', $this->id)->order('minute ASC');
+	$this->template->subs = $this->model->getSubstitutions()->where('match_id = ?', $this->id)->order('minute ASC');
+    }
+    
+    public function renderCompetition()
+    {
+	$this->template->matches = $this->model->getMatches()->where('competition.name = ?', 'IV. třída')->order('date ASC');
     }
     
     protected function createComponentMatchAddForm()
@@ -157,9 +169,7 @@ class MatchPresenter extends BasePresenter {
 	$form->addSelect('event_type_id', 'Typ:', $this->model->getEventTypes()->order('id ASC')->fetchPairs('id', 'name'))
 		->addRule(Form::FILLED, 'Je nutné zadat typ.');
 	$form->addText('minute', 'Minuta:')
-		->setType('number')
-		->addRule(Form::INTEGER, 'Minuta musí být číslo')
-		->addRule(Form::RANGE, 'Minuta musí být od 1 do 90', array(1, 90));
+		->setType('number');
 	$form->addSelect('player_id', 'Hráč:', $this->fetchPairsPlayers())
 		->addRule(Form::FILLED, 'Je nutné vybrat hráče.');
 	$form->addCheckbox('penalty', 'Penalta');
@@ -199,7 +209,7 @@ class MatchPresenter extends BasePresenter {
 	return $form;
     }
     
-    public function substitutionAddFormSubmitted()
+    public function substitutionAddFormSubmitted(Form $form)
     {
 	$data = array(
 	    'match_id' => $form->values->match_id,

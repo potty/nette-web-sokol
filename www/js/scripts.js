@@ -101,3 +101,15 @@ $(function() {
 	    }
     });
 });
+
+/**
+ * DataTable
+ */
+$(document).ready(function() {
+    $('#data-table').dataTable({
+	'bPaginate': false,
+	'bInfo': false,
+	'bFilter': false
+	//'bJQueryUI': true
+    });
+} );

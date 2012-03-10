@@ -1,0 +1,36 @@
+{snippet}
+<table id="data-table" class="format">
+    <thead>
+	<tr>
+	    <th>Hráč</th>
+	    <th title="Zápasy celkem">ZC</th>
+	    <th title="Základní sestava">ZS</th>
+	    <th title="Střídání do hry">SI</th>
+	    <th title="Střídání ze hry">SO</th>
+	    <th title="Odehrané minuty">M</th>
+	    <th title="Góly">G</th>
+	    <th title="Góly z penalt">GP</th>
+	    <th title="Žluté karty">ŽK</th>
+	    <th title="Červené karty">ČK</th>
+	</tr>
+    </thead>
+    
+    <tbody>
+    {foreach $players as $player}
+    <tr>
+	<td><a href="{plink Player:single $player->id}">{$player->surname} {$player->name}</a></td>
+	<td>{$stats[$player->id]['matches']}</td>	
+	<td>{$stats[$player->id]['starting']}</td>	
+	<td>{$stats[$player->id]['subs_in']}</td>	
+	<td>{$stats[$player->id]['subs_out']}</td>	
+	<td>{$stats[$player->id]['mins']}</td>	
+	<td>{$stats[$player->id]['goals']}</td>	
+	<td>{$stats[$player->id]['goals_pen']}</td>	
+	<td>{$stats[$player->id]['y_cards']}</td>	
+	<td>{$stats[$player->id]['r_cards']}</td>	
+    </tr>
+    {/foreach}
+    </tbody>
+    
+</table>
+{/snippet}

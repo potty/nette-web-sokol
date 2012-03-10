@@ -31,6 +31,11 @@ class PlayerPresenter extends BasePresenter {
     {
 	$this->template->player = $this->player;
     }
+    
+    public function renderStatistics()
+    {
+	
+    }
 
     protected function createComponentPlayerAddForm()
     {
@@ -64,6 +69,16 @@ class PlayerPresenter extends BasePresenter {
 	$this->model->getPlayers()->insert($data);
 	$this->flashMessage('Hráč přidán.', 'success');
 	$this->redirect('this');
+    }
+    
+    /**
+     * Creates component PlayerStatistics
+     * @return PlayerList 
+     */
+    protected function createComponentPlayerStatistics()
+    {
+	$players = $this->model->getPlayers()->where('team.name', 'Věteřov')->order('surname ASC', 'name ASC');
+	return new PlayerStatistics($players, $this->model);
     }
 
 }

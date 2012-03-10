@@ -20,9 +20,10 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
     public $menu = array (
 	'Homepage:' => 'Domů',
 	//'Homepage:' => 'Články',
+	'Match:competition' => 'Soutěž',
 	'Match:' => 'Zápasy',
 	'Player:' => 'Sestava',
-	//'Stats:' => 'Statistiky',
+	'Player:statistics' => 'Statistiky',
 	'Training:' => 'Tréninky',
     );
     
@@ -69,13 +70,20 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
     {
 	$this->template->menu = $this->menu;
 	$this->template->lastMatch = $this->model->getMatches()
-		->where('played = ?', 1)
+		->where('played = ? AND (home_id = ? OR away_id =?)', 1, 1, 1)
 		->order('date DESC')
 		->limit(1);
 	$this->template->nextMatch = $this->model->getMatches()
-		->where('played = ?', 0)
+		->where('played = ? AND (home_id = ? OR away_id =?)', 0, 1, 1)
 		->order('date ASC')
 		->limit(1);
+	$this->template->scorers = $this->model->getEvents()
+		->select('player.id AS id, player.name AS name, player.surname AS surname, COUNT(*) AS goals')
+		->where('event_type.name', 'gól')
+		->where('match.competition.name', 'IV. třída')
+		->group('player_id')
+		->order('goals DESC')
+		->limit(4);
 	if ($this->isAjax()) {
 	    $this->invalidateControl('flash');
 	}

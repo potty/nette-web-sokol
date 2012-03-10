@@ -1,0 +1,34 @@
+{var $title = 'Soutěž'}
+
+{block content}
+
+<h1>{$title} {$currentSeason}</h1>
+
+<table class="format">
+    <tr>
+	<th>Datum</th>
+	<th>Soutěž</th>
+	<th>Kolo</th>
+	<th>Domácí</th>
+	<th></th>
+	<th>Hosté</th>
+	<th>Skóre</th>
+	{if $allowedEdit}
+	<th>Akce</th>
+	{/if}
+    </tr>
+{foreach $matches as $match}
+    <tr>
+	<td>{$match->date|date:'d.m.Y H:i'}</td>
+	<td>{$match->competition->name}</td>
+	<td>{$match->round}</td>
+	<td>{$match->ref('team', 'home_id')->name}</td>
+	<td>&nbsp;-&nbsp;</td>
+	<td>{$match->ref('team', 'away_id')->name}</td>
+	<td><a href="{link Match:single $match->id}">{$match->score_home}:{$match->score_away}</a></td>
+	{if $allowedEdit}
+	<td><a href="{link Match:edit $match->id}">Upravit</a></td>
+	{/if}
+    </tr>
+{/foreach}
+</table>

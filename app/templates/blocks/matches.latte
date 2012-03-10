@@ -5,7 +5,9 @@
     <table>
     {foreach $lastMatch as $match}
 	<tr>
-	    <td colspan="3">{$match->date|date:'d.m.Y H:i'}</td>
+	    <td>{$match->date|date:'d.m.Y H:i'}</td>
+	    <td></td>
+	    <td>{$match->competition->name} {if $match->round} - {$match->round}{/if}</td>
 	</tr>
 	<tr>
 	    <td>{$match->ref('team', 'home_id')->name}</td>
@@ -24,7 +26,9 @@
     <table>
     {foreach $nextMatch as $match}
 	<tr>
-	    <td colspan="3">{$match->date|date:'d.m.Y H:i'}</td>
+	    <td>{$match->date|date:'d.m.Y H:i'}</td>
+	    <td></td>
+	    <td>{$match->competition->name} {if $match->round} - {$match->round}{/if}</td>
 	</tr>
 	<tr>
 	    <td>{$match->ref('team', 'home_id')->name}</td>

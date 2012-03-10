@@ -38,6 +38,8 @@
 	<link rel="stylesheet" type="text/css" href="{$basePath}/css/jquery-ui-timepicker-addon.css">
 	<link rel="stylesheet" type="text/css" href="{$basePath}/css/dateInput.css">
 	
+	<script type='text/javascript' src="{$basePath}/js/jquery.dataTables.min.js"></script>
+	
 	<script type="text/javascript" src="{$basePath}/js/scripts.js"></script>
 	<script type="text/javascript" src="{$basePath}/js/ajax.js"></script>
 	
@@ -84,7 +86,11 @@
 	
 	<div class="grid_4" id="sidebar">
 	    <div class="inner-wrapper">
+		{if $user->isInRole('admin')}
+		    {include './blocks/admin.latte', lastMatch => $lastMatch}
+		{/if}
 		{include './blocks/matches.latte', lastMatch => $lastMatch}
+		{include './blocks/scorers.latte', scorers => $scorers}
 	    </div>
 	</div>
 	<div class="clear"></div>
