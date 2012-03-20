@@ -35,7 +35,7 @@ class Selection extends Nette\Object implements \Iterator, \ArrayAccess, \Counta
 	/** @var string primary key field name */
 	protected $primary;
 
-	/** @var array of [primary key => TableRow] readed from database */
+	/** @var array of [primary key => TableRow] read from database */
 	protected $rows;
 
 	/** @var array of [primary key => TableRow] modifiable */
@@ -565,7 +565,7 @@ class Selection extends Nette\Object implements \Iterator, \ArrayAccess, \Counta
 	protected function tryDelimite($s)
 	{
 		$driver = $this->connection->getSupplementalDriver();
-		return preg_replace_callback('#(?<=[^\w`"[]|^)[a-z_][a-z0-9_]*(?=[^\w`"\]]|$)#i', function($m) use ($driver) {
+		return preg_replace_callback('#(?<=[^\w`"\[]|^)[a-z_][a-z0-9_]*(?=[^\w`"(\]]|$)#i', function($m) use ($driver) {
 			return strtoupper($m[0]) === $m[0] ? $m[0] : $driver->delimite($m[0]);
 		}, $s);
 	}

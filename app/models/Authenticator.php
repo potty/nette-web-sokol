@@ -41,10 +41,17 @@ class Authenticator extends Nette\Object implements NS\IAuthenticator
 		if ($row->password !== $this->calculateHash($password)) {
 			throw new NS\AuthenticationException("Špatné heslo.", self::INVALID_CREDENTIAL);
 		}
+		
+		if ($row->is_active == FALSE) {
+		    throw new NS\AuthenticationException('Váš účet není aktivován.');
+		}
 
 		unset($row->password);
 		$identity = new NS\Identity($row->id, $row->role->name);
+		$identity->login = $row->login;
+		$identity->isActive = $row->is_active;
 		$identity->name = $row->name;
+		$identity->surname = $row->surname;
 		return $identity;
 	}
 

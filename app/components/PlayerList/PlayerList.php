@@ -53,11 +53,11 @@ class PlayerList extends UI\Control
 	if (!$isParticipate) {
 	    // Kdyz hrac jeste neni pridan, tak se vytvori zaznam
 	    $this->model->getPlayersTrainings()->insert(array('player_id' => $playerId, 'training_id' => $trainingId));
-	    $this->presenter->flashMessage('Hráč přidán do tréninku.');
+	    //$this->presenter->flashMessage('Hráč přidán do tréninku.');
 	} else {
 	    // Kdyz zaznam existuje, tak se odebere
 	    $this->model->getPlayersTrainings()->where('player_id = ? AND training_id = ?', $playerId, $trainingId)->delete();
-	    $this->presenter->flashMessage('Hráč odebrán z tréninku.');
+	    //$this->presenter->flashMessage('Hráč odebrán z tréninku.');
 	}
 	if ($this->presenter->isAjax()) {
 	    $this->invalidateControl();

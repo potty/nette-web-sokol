@@ -2,6 +2,12 @@
 @border: #e3e3e3;
 @link: #2E2B2B;
 @color: #767373;
+@color2: #B79C92;
+
+@font-face {
+    font-family: Adelle;
+    src: url('./fonts/adelle-bold.otf');
+}
 
 .rounded-corners (@radius: 5px) {
     -moz-border-radius: @radius;
@@ -61,13 +67,32 @@ A {
 	color: darken(@link, 20%);
 	text-decoration: underline;
     }
+    &.button {
+	border: 1px solid @border;
+	padding: 5px;
+	.rounded-corners;
+	.gradient(lighten(@border, 10%), lighten(@border, 5%));
+    }
+}
+
+IMG {
+    .format {
+	border: 1px solid @border;
+    }
+}
+
+INPUT[readonly] {
+    border: none;
 }
 
 #header {
     height: 120px;
     .page-title {
-	font: normal bold 48px Arial;
+	font: normal bold 54px Adelle;
 	margin-top: 40px;
+	A:hover {
+	    text-decoration: none;
+	}
     }
     .login-search {
 	text-align: right;
@@ -77,12 +102,15 @@ A {
 #navigation {
     @color1: #ee6e49;
     @color2: #cf2f21;
-    border: @color2;
-    height: 40px;
-    margin-bottom: 20px;
-    .rounded-corners-specific (5px, 5px, 0, 0);
-    .gradient (@color1, @color2);
-    ul.menu {
+    .inner-wrapper {	
+	border: 1px solid darken(@color2, 2%);
+	height: 40px;
+	margin-bottom: 20px;
+	.rounded-corners-specific (5px, 5px, 0, 0);
+	.gradient (@color1, @color2);
+	.box-shadow(0, 1px, 3px, darken(#ccc, 10%));
+    }
+/*    ul.menu {
 	margin-top: 10px;
 	font-weight: bold;
 	font-family: Arial;
@@ -103,6 +131,88 @@ A {
 		}
 	    }
 	}
+    }*/
+    .menu {
+	list-style: none;
+	//margin: 30px auto 0 auto;
+	height: 43px;
+	padding: 0 20px 0 20px;
+	li {
+	    float: left;
+	    display: block;
+	    text-align: center;
+	    position: relative;
+	    padding: 4px 10px 4px 10px;
+	    margin-right: 20px;
+	    margin-top: 7px;
+	    border: none;
+	    &:hover {
+		border: 1px solid @border;
+		padding: 4px 9px 4px 9px;
+		background: #fff;
+		.rounded-corners-specific(5px, 5px, 0, 0);
+		a {
+		    color: lighten(@link, 20%);
+		    &:hover {
+			color: darken(@link, 20%);
+		    }
+		}
+		.dropdown {
+		    left: -1px;
+		    top: auto;
+		}
+	    }
+	    a {
+		color: #eee;
+		display: block;
+		outline: 0;
+		text-decoration: none;
+		font-weight: bold;
+		text-transform: uppercase;
+	    }
+	    &.single {
+		&:hover {
+		    .rounded-corners;
+		}
+	    }
+	    .drop {
+		padding-right: 21px;
+		background: url('../images/drop.png') no-repeat right 7px;
+	    }
+	    ul {
+		list-style: none;
+		padding: 10px;
+		margin: 0 0 12px 0;
+		li {
+		    position: relative;
+		    float: none;
+		    text-align: left;
+		    line-height: 24px;
+		    padding: 5px 0;
+		    margin: 0;
+		    &:hover {
+			background: none;
+			border: none;
+			padding: 5px 0;
+			margin: 0;
+		    }
+		}
+	    }
+	}
+    }
+    .dropdown {
+	margin: 4px auto;
+	float: left;
+	position: absolute;
+	left: -999em;
+	text-align: left;
+	padding: 10px 5px 10px 5px;
+	border: 1px solid @border;
+	border-top: none;
+	width: 120px;
+	.gradient(#fff, darken(#fff, 5%));
+	.rounded-corners-specific(0, 5px, 5px, 5px);
+	.box-shadow(0, 2px, 2px, darken(@border, 5%));
     }
 }
 
@@ -128,12 +238,15 @@ A {
 
 .article, .article-full {
     IMG {
-	border: 1px solid #E7E4E2;
-	float: left;
-	margin-right: 10px;
+	vertical-align: baseline;
+	&.teaser {
+	    border: 1px solid #E7E4E2;
+	    float: left;
+	    margin-right: 10px;
+	}
     }
     .info {
-	color: #B79C92;
+	color: @color2;
 	.created {
 	    font-weight: bold;
 	}
@@ -141,6 +254,10 @@ A {
 	    color: #ddd;
 	}
     }
+}
+
+.article {
+    height: 130px;
 }
 
 .article-full {
@@ -156,11 +273,20 @@ A {
     }
 }
 
+.right {
+    text-align: right;
+}
+
+.center {
+    text-align: center;
+}
+
 TABLE {
     @green: #49d100;
     border-collapse: collapse;
-    width: 90%;
+    width: 100%;
     &.format {
+	margin-bottom: 20px;
 	TR {
 	    &:hover {
 		background-color: darken(#fff, 5%);
@@ -177,15 +303,29 @@ TABLE {
 		    color: @green;
 		}
 	    }
+	    &.win TD.score {
+		background-color: lighten(#95ff93, 10%);
+	    }
+	    &.draw TD.score {
+		background-color: lighten(yellow, 30%);
+	    }
+	    &.lose TD.score {
+		background-color: lighten(#ffb0ad, 10%);
+	    }
 	}
 	TH {
-	    border-bottom: 3px solid @border;
+	    background: @border;
+	    border-bottom: 1px solid darken(@border, 10%);
 	    font-weight: bold;
+	    padding: 1px;
 	}
 	TD {
 	    border-bottom: 1px solid @border;
 	    &.title {
 		font-weight: bold;
+	    }
+	    &.delimiter {
+		width: 30px;
 	    }
 	}
     }
@@ -195,7 +335,63 @@ TABLE {
 		width: 50%;
 	    }
 	}  
-    } 
+    }
+    &.block-table {
+	width: 100%;
+	TR {
+	    &.highlight {
+		TD {
+		    font-weight: bold;
+		}
+	    }
+	}
+	TD {
+	    &.right {
+		text-align: right;
+	    }
+	    &.score {
+		font-weight: bold;
+		text-align: center;
+	    }
+	    &.team-name {
+		width: 100px;
+	    }
+	}
+    }
+    &.match-table {
+	width: 100%;
+	border: 2px solid @border;
+	border-bottom: 1px solid darken(@border, 10%);
+	TH {
+	    background: @border;
+	    border-bottom: 1px solid darken(@border, 10%);
+	    padding: 4px;
+	    font-weight: bold;
+	}
+	TD {
+	    padding: 4px;
+	    &.team-name {
+		font-weight: bold;
+		font-size: 28px;
+		padding: 50px 20px;
+		width: 200px;
+	    }
+	    &.score {
+		font-size: 28px;
+		font-weight: bold;
+		padding: 50px 20px;
+	    }
+	    &.minute {
+		width: 150px;
+	    }
+	}
+	IMG {
+	    vertical-align: middle;
+	    padding: 1px 4px;
+	    position: relative;
+	    top: -2px;
+	}
+    }
 }
 
 .squad {
@@ -209,6 +405,9 @@ TABLE {
 .player-profile {
     margin: auto;
     H1 {
+	margin-bottom: 20px;
+    }
+    .player-info {
 	margin-bottom: 20px;
     }
     .player-photo {
@@ -240,4 +439,55 @@ TABLE {
 	margin-bottom: 10px;
 	text-transform: uppercase;
     }
+}
+
+.hidden {
+    display: none;
+}
+
+div.flash {
+    border: 1px solid;
+    margin: 10px 0;
+    padding: 15px 10px 15px 50px;
+    background-repeat: no-repeat;
+    background-position: 10px center;
+    .rounded-corners;
+    &.error {
+	@bg: #FFBABA;
+	color: #D8000C;
+	background-color: @bg;
+	background-image: url('../images/error.png');
+    }
+    &.success {
+	@bg: #DFF2BF;
+	color: #4F8A10;
+	background-color: @bg;
+	background-image: url('../images/success.png');
+    }
+    &.warning {
+	@bg: #FEEFB3;
+	color: #9F6000;
+	background-color: @bg;
+	background-image: url('../images/warning.png');
+    }
+}
+
+#comments {
+    margin-bottom: 20px;
+    .comment {
+	border: 1px solid @border;
+	margin-bottom: 10px;
+	padding: 5px;
+	.info {
+	    color: @color2;
+	    font-size: 11px;
+	}
+	.author {
+	    font-weight: bold;
+	}
+    }
+}
+
+.links {
+    margin-bottom: 20px;
 }

@@ -116,5 +116,10 @@ class Model extends Nette\Object
     {
 	return $this->database->table('substitution');
     }
+    
+    public function getComments()
+    {
+	return $this->database->table('comment');
+    }
 
 }

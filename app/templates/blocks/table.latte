@@ -1,0 +1,16 @@
+<div class="block">
+
+    <div class="title">Tabulka</div>
+    
+    <table class="block-table">
+    {foreach $table as $team}
+	<tr n:class="$team['team'] == 'Věteřov' ? highlight">
+	    <td>{$iterator->counter}.</td>
+	    <td>{$team['team']}</td>
+	    <td>{$team['matches']}</td>
+	    <td>{$team['points']}</td>
+	</tr>
+    {/foreach}
+    </table>
+    
+</div>

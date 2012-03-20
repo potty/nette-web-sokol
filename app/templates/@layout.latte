@@ -39,6 +39,7 @@
 	<link rel="stylesheet" type="text/css" href="{$basePath}/css/dateInput.css">
 	
 	<script type='text/javascript' src="{$basePath}/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" src="{$basePath}/ckeditor/ckeditor.js"></script>
 	
 	<script type="text/javascript" src="{$basePath}/js/scripts.js"></script>
 	<script type="text/javascript" src="{$basePath}/js/ajax.js"></script>
@@ -52,12 +53,12 @@
 	
 	<div class="grid_12" id="header">
 	    <div class="grid_8 alpha page-title">
-		<a href="{link Homepage: }">Sokol Věteřov</a>
+		<a href="{link Homepage: }" title="Domů">Sokol Věteřov</a>
 	    </div>
 	    <div class="grid_4 omega login-search">
 		<div class="user">
 		{if $user->isLoggedIn()}
-		    <span class="name">{$user->getIdentity()->name}</span> |
+		    <span class="name">{$user->getIdentity()->login} ({$user->getIdentity()->name} {$user->getIdentity()->surname})</span> |
 		    <a n:href="signOut!">Odhlásit</a>
 		{else}
 		    <a href="{link Sign:in}">Přihlásit</a>
@@ -68,11 +69,9 @@
 	<div class="clear"></div>
 	
 	<div class="grid_12" id="navigation">
-	    <ul class="menu">
-		{foreach $menu as $url => $title}
-		    <li class="menu-item"><a href="{link $url 'id' => NULL}">{$title}</a></li>
-		{/foreach}
-	    </ul>
+	    <div class="inner-wrapper">
+		{include './blocks/menu.latte'}
+	    </div>
 	</div>
 	<div class="clear"></div>
     
@@ -90,6 +89,7 @@
 		    {include './blocks/admin.latte', lastMatch => $lastMatch}
 		{/if}
 		{include './blocks/matches.latte', lastMatch => $lastMatch}
+		{include './blocks/table.latte', table => $table}
 		{include './blocks/scorers.latte', scorers => $scorers}
 	    </div>
 	</div>

@@ -2,17 +2,17 @@
 
     <div class="title">Minulý zápas</div>
     
-    <table>
+    <table class="block-table">
     {foreach $lastMatch as $match}
 	<tr>
 	    <td>{$match->date|date:'d.m.Y H:i'}</td>
 	    <td></td>
-	    <td>{$match->competition->name} {if $match->round} - {$match->round}{/if}</td>
+	    <td class="right">{$match->competition->name} {if $match->round} - {$match->round}{/if}</td>
 	</tr>
 	<tr>
-	    <td>{$match->ref('team', 'home_id')->name}</td>
-	    <td><a href="{link Match:single $match->id}">{$match->score_home} : {$match->score_away}</a></td>
-	    <td>{$match->ref('team', 'away_id')->name}</td>
+	    <td class="team-name left">{$match->ref('team', 'home_id')->name}</td>
+	    <td class="score"><a href="{link Match:single $match->id}">{$match->score_home} : {$match->score_away}</a></td>
+	    <td class="team-name right">{$match->ref('team', 'away_id')->name}</td>
 	</tr>
     {/foreach}
     </table>
@@ -23,17 +23,17 @@
 
     <div class="title">Příští zápas</div>
     
-    <table>
+    <table class="block-table">
     {foreach $nextMatch as $match}
 	<tr>
 	    <td>{$match->date|date:'d.m.Y H:i'}</td>
 	    <td></td>
-	    <td>{$match->competition->name} {if $match->round} - {$match->round}{/if}</td>
+	    <td class="right">{$match->competition->name} {if $match->round} - {$match->round}{/if}</td>
 	</tr>
 	<tr>
-	    <td>{$match->ref('team', 'home_id')->name}</td>
-	    <td>{$match->score_home} : {$match->score_away}</td>
-	    <td>{$match->ref('team', 'away_id')->name}</td>
+	    <td class="team-name left">{$match->ref('team', 'home_id')->name}</td>
+	    <td class="score">- : -</td>
+	    <td class="team-name right">{$match->ref('team', 'away_id')->name}</td>
 	</tr>
     {/foreach}
     </table>

@@ -102,6 +102,8 @@ $(function() {
     });
 });
 
+
+
 /**
  * DataTable
  */
@@ -113,3 +115,16 @@ $(document).ready(function() {
 	//'bJQueryUI': true
     });
 } );
+
+
+/**
+ * Custom scripts
+ */
+$(function() {
+   
+   // Showing/hiding content
+   $('.toggle').click(function() {
+       $('.toggable').toggle();
+   });
+   
+});

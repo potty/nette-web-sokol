@@ -29,7 +29,7 @@ use Nette,
  * @property-read string $action
  * @property      string $view
  * @property      string $layout
- * @property-read stdClass $payload
+ * @property-read \stdClass $payload
  * @property-read bool $ajax
  * @property-read Nette\Application\Request $lastCreatedRequest
  * @property-read Nette\Http\SessionSection $flashSession
@@ -87,7 +87,7 @@ abstract class Presenter extends Control implements Application\IPresenter
 	/** @var string */
 	private $layout;
 
-	/** @var stdClass */
+	/** @var \stdClass */
 	private $payload;
 
 	/** @var string */
@@ -113,12 +113,8 @@ abstract class Presenter extends Control implements Application\IPresenter
 
 
 
-	public function __construct(Nette\DI\IContainer $context)
+	public function __construct()
 	{
-		$this->context = $context;
-		if ($this->invalidLinkMode === NULL) {
-			$this->invalidLinkMode = $context->parameters['productionMode'] ? self::INVALID_LINK_SILENT : self::INVALID_LINK_WARNING;
-		}
 	}
 
 
@@ -573,7 +569,7 @@ abstract class Presenter extends Control implements Application\IPresenter
 
 
 	/**
-	 * @return stdClass
+	 * @return \stdClass
 	 */
 	public function getPayload()
 	{
@@ -1355,6 +1351,16 @@ abstract class Presenter extends Control implements Application\IPresenter
 
 
 	/********************* services ****************d*g**/
+
+
+
+	final public function setContext(Nette\DI\IContainer $context)
+	{
+		$this->context = $context;
+		if ($this->invalidLinkMode === NULL) {
+			$this->invalidLinkMode = empty($context->parameters['productionMode']) ? self::INVALID_LINK_WARNING : self::INVALID_LINK_SILENT;
+		}
+	}
 
 
 

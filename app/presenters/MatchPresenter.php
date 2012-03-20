@@ -11,18 +11,43 @@ use Vodacek\Forms\Controls\DateInput;
 class MatchPresenter extends BasePresenter {
 
     private $match;
+    
+    /**
+     * Match ID
+     * @var int 
+     */
     private $id;
     
     public function beforeRender() {
 	parent::beforeRender();
 	$result = $this->model->getSeasons()->select('name')->where('id', $this->currentSeason)->fetch();
 	$this->template->currentSeason = $result['name'];
-	$this->template->allowedEdit = $this->acl->isAllowed($this->user->identity->roles[0], 'match', 'edit');
+	$this->template->allowedEdit = $this->acl->isAllowed($this->user->identity->roles[0], 'match', 'edit') && $this->getUser()->isLoggedIn();
     }
     
     public function renderDefault() {
 	// get all Veterov matches (don't know how to implement string value instead index)
-	$this->template->matches = $this->model->getMatches()->where('home_id = ? OR away_id =?', 1, 1)->order('date ASC');
+	$matches = $this->model->getMatches()->where('home_id = ? OR away_id =?', 1, 1)->order('date ASC');
+	$results = array();
+	foreach ($matches as $match) {
+	    $status = 'lose';						    // default status lose
+	    if ($match->home_id == 1) {
+		if ($match->score_home > $match->score_away) {		    // home wins
+		    $status = 'win';
+		} else if ($match->score_home == $match->score_away) {	    // home draws
+		    $status = 'draw';
+		}
+	    } else if ($match->score_home < $match->score_away) {	    // away wins
+		$status = 'win';
+	    } else if ($match->score_home == $match->score_away) {	    // away draws
+		$status = 'draw';
+	    }
+	    if ($match->played == false)				    // match haven't been played yet 
+		$status = 'not-played';
+	    $results[$match->id] = $status;
+	}
+	$this->template->results = $results;
+	$this->template->matches = $matches;
     }
     
     public function actionEdit($id)
@@ -41,6 +66,7 @@ class MatchPresenter extends BasePresenter {
 	if ($this->match === FALSE) {
 	    $this->setView('notFound');
 	}
+	$this->id = $id;
     }
     
     public function actionAddSubs($id)
@@ -64,6 +90,11 @@ class MatchPresenter extends BasePresenter {
     public function renderSingle()
     {
 	$this->template->match = $this->match;
+	$this->template->goals = $this->model->getEvents()->where('event_type.name = ? AND match_id = ?', 'gól', $this->id)->order('minute ASC');
+	$this->template->cards = $this->model->getEvents()->where('(event_type.name = ? OR event_type.name = ?) AND match_id = ?', 'žlutá karta', 'červená karta', $this->id)->order('minute ASC');
+	$this->template->subs = $this->model->getSubstitutions()->where('match_id = ?', $this->id);
+	$this->template->players = $this->model->getPlayers();
+	$this->template->article = $this->model->getArticles()->where('match_id = ?', $this->id)->fetch();
     }
     
     public function renderEdit()
@@ -95,6 +126,15 @@ class MatchPresenter extends BasePresenter {
 	$form->addSelect('awayId', 'Hosté:', $this->model->getTeams()->order('name ASC ')->fetchPairs('id', 'name'))
 		->setPrompt('- Vyberte -')
 		->addRule(Form::FILLED, 'Je nutné vybrat hostující tým.');
+	$form->addText('score_home', 'Skóre domácí:')
+		->setType('number')
+		->addRule(Form::INTEGER, 'Skóre musí být číslo')
+		->addRule(Form::RANGE, 'Skóre musí být od 0 do 20', array(0, 20));
+	$form->addText('score_away', 'Skóre hosté:')
+		->setType('number')
+		->addRule(Form::INTEGER, 'Skóre musí být číslo')
+		->addRule(Form::RANGE, 'Skóre musí být od 0 do 20', array(0, 20));
+	$form->addCheckbox('played', 'Odehráno');
 	$form->addSubmit('create', 'Vytvořit');
 	$form->onSuccess[] = callback($this, 'matchAddFormSubmitted');
 	return $form;
@@ -108,8 +148,11 @@ class MatchPresenter extends BasePresenter {
 	    'season_id' => $form->values->seasonId,
 	    'home_id' => $form->values->homeId,
 	    'away_id' => $form->values->awayId,
+	    'played' => $form->values->played,
 	);
 	if ($form->values->round != '') $data['round'] = $form->values->round;
+	if ($form->values->score_home != '') $data['score_home'] = $form->values->score_home;
+	if ($form->values->score_away != '') $data['score_away'] = $form->values->score_away;
 	$this->model->getMatches()->insert($data);
 	$this->flashMessage('Zápas přidán.', 'success');
 	$this->redirect('this');
@@ -131,13 +174,9 @@ class MatchPresenter extends BasePresenter {
 	$form->addSelect('away_id', 'Hosté:', $this->model->getTeams()->order('name ASC ')->fetchPairs('id', 'name'))
 		->addRule(Form::FILLED, 'Je nutné vybrat hostující tým.');
 	$form->addText('score_home', 'Skóre domácí:')
-		->setType('number')
-		->addRule(Form::INTEGER, 'Skóre musí být číslo')
-		->addRule(Form::RANGE, 'Skóre musí být od 0 do 20', array(0, 20));
+		->setType('number');
 	$form->addText('score_away', 'Skóre hosté:')
-		->setType('number')
-		->addRule(Form::INTEGER, 'Skóre musí být číslo')
-		->addRule(Form::RANGE, 'Skóre musí být od 0 do 20', array(0, 20));
+		->setType('number');
 	$form->addCheckbox('played', 'Odehráno');
 	$form->addSubmit('save', 'Uložit');
 	$form->onSuccess[] = callback($this, 'matchEditFormSubmitted');

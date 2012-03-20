@@ -17,15 +17,18 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
      * Seznam polozek menu
      * @var array
      */
-    public $menu = array (
-	'Homepage:' => 'Domů',
-	//'Homepage:' => 'Články',
-	'Match:competition' => 'Soutěž',
-	'Match:' => 'Zápasy',
-	'Player:' => 'Sestava',
-	'Player:statistics' => 'Statistiky',
-	'Training:' => 'Tréninky',
-    );
+//    public $menu = array (
+//	'Domů' => 'Homepage:',
+//	//'Homepage:' => 'Články',
+//	'Soutěž' => array(
+//	    'Zápasy' => 'Match:competition',
+//	    'Tabulka' => 'Match:competition',
+//	),
+//	'Zápasy' => 'Match:',
+//	'Sestava' => 'Player:',
+//	'Statistiky' => 'Player:statistics',
+//	'Tréninky' => 'Training:',
+//    );
     
     public function startup() 
     {
@@ -39,7 +42,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
 	    if ($this->getUser()->isInRole('guest')) {
 		$this->acl = new AclModel();
 		if (!$this->acl->isAllowed('guest', strtolower($this->name), $this->action)) {
-		    $this->flashMessage('Do této části aplikace nemáte přístup. Byl jste přesměrován.');
+		    $this->flashMessage('Do této části aplikace nemáte přístup. Byl jste přesměrován.', 'warning');
 		    $this->redirect('Homepage:');
 		}
 	    }
@@ -49,7 +52,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
 	    $role = array_shift($roles);
 
 	    if (!$this->acl->isAllowed($role, strtolower($this->name), $this->action)) {
-		$this->flashMessage('Do této části aplikace nemáte přístup. Byl jste přesměrován.');
+		$this->flashMessage('Do této části aplikace nemáte přístup. Byl jste přesměrován.', 'warning');
 		$this->redirect('Homepage:');
 	    }
 	}
@@ -68,7 +71,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
     
     public function beforeRender()
     {
-	$this->template->menu = $this->menu;
+	//$this->template->menu = $this->menu;
 	$this->template->lastMatch = $this->model->getMatches()
 		->where('played = ? AND (home_id = ? OR away_id =?)', 1, 1, 1)
 		->order('date DESC')
@@ -84,9 +87,57 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
 		->group('player_id')
 		->order('goals DESC')
 		->limit(4);
+	$teams = $this->model->getTeams()->where('competition.name = ?', 'IV. třída');
+	$table = array();
+	foreach ($teams as $team) {
+	    $points = 0;
+	    $total_matches = 0;
+	    $matches = $this->model->getMatches()->where('competition.name = ? AND played = ? AND (home_id = ? OR away_id = ?)', 'IV. třída', 1, $team->id, $team->id);
+	    foreach ($matches as $match) {
+		$total_matches++;
+		if ($match->home_id == $team->id) {
+		    $isHome = true;
+		} else {
+		    $isHome = false;
+		}
+		if ((($match->score_home > $match->score_away) && $isHome) ||
+			(($match->score_home < $match->score_away) && $isHome == false)) {
+		    $points += 3;
+		} else if ($match->score_home == $match->score_away) {
+		    $points += 1;
+		}
+	    }
+	    $table[] = array(
+		'team' => $team->name,
+		'matches' => $total_matches,
+		'points' => $points,
+	    );
+	}
+	$this->template->table = $this->sortTable($table);
 	if ($this->isAjax()) {
 	    $this->invalidateControl('flash');
 	}
+    }
+    
+//    public function afterRender()
+//    {
+//	if (Nette\Diagnostics\Debugger::isEnabled())
+//	    Nette\Diagnostics\Debugger::barDump($this->template->getParameters(), 'Template variables');
+//    }
+    
+    /**
+     * Sorts league table by points
+     * @param array $table
+     * @return array 
+     */
+    private function sortTable($table)
+    {
+	$points = array();
+	foreach ($table as $item) {
+	    $points[] = $item['points'];
+	}
+	array_multisort($points, SORT_DESC, $table);
+	return $table;
     }
     
     public function handleSignOut()

@@ -1,0 +1,17 @@
+<h2>Komentáře</h2>
+
+<div id="comments">
+
+    {if count($comments)}
+            <div id="comment-{$comment->id}" class="comment" n:foreach="$comments as $comment">
+                <div class="info">
+		    <span class="author">{$comment->author}</span> | 
+		    {$comment->created|date:'j.n.Y, H:i'}
+		</div>
+		<div>{$comment->text}</div>
+            </div>
+    {else}
+        Ke článku zatím nebyly napsány žádné komentáře.
+    {/if}
+    
+</div>

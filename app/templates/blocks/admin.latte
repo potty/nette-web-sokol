@@ -3,9 +3,13 @@
     <div class="title">Admin menu</div>
     
     <ul>
-	<li><a href="{link Article:add}">Přidat článek</a></li>
-	<li><a href="{link Match:add}">Přidat zápas</a></li>
-	<li><a href="{link Training:add}">Přidat trénink</a></li>
+	<li><a href="#" class="toggle">Přidat obsah</a> 
+	    <ul class="toggable hidden">
+		<li><a href="{link Article:add}">článek</a></li>
+		<li><a href="{link Match:add}">zápas</a></li>
+		<li><a href="{link Training:add}">trénink</a></li>
+	    </ul>
+	</li>
     </ul>
     
 </div>

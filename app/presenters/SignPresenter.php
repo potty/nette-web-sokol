@@ -16,8 +16,10 @@ class SignPresenter extends BasePresenter
 	protected function createComponentSignInForm()
 	{
 	    $form = new Form();
-	    $form->addText('username', 'Uživatelské jméno:', 30, 20);
-	    $form->addPassword('password', 'Heslo:', 30);
+	    $form->addText('username', 'Uživatelské jméno:', 30, 20)
+		    ->setRequired('Zadejte uživatelské jméno.');
+	    $form->addPassword('password', 'Heslo:', 30)
+		    ->setRequired('Zadejte heslo.');
 	    $form->addCheckbox('persistent', 'Pamatovat si mě na tomto počítači');
 	    $form->addSubmit('login', 'Přihlásit se');
 	    $form->onSuccess[] = callback($this, 'signInFormSubmitted');
@@ -38,7 +40,7 @@ class SignPresenter extends BasePresenter
 		$this->flashMessage('Přihlášení bylo úspěšné.', 'success');
 		$this->redirect('Homepage:');
 	    } catch (NS\AuthenticationException $e) {
-		$form->addError('Neplatné uživatelské jméno nebo heslo.');
+		$this->getPresenter()->flashMessage($e->getMessage(), 'error');
 	    }
 	}
 

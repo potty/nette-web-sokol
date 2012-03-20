@@ -2,7 +2,87 @@
 
 {block content}
 
-<div class="player-profile">
-    <h1>{$title}</h1>
+<div class="match-overview">
+    
+    <table class="match-table">
+	<tr>
+	    <th>{$match->date|date:'d.m.Y H:i'}</th>
+	    <th></th>
+	    <th class="right">{$match->competition->name} {if $match->round} - {$match->round}{/if}</th>
+	</tr>
+	<tr>
+	    <td class="team-name center">{$match->ref('team', 'home_id')->name}</td>
+	    <td class="score center">{$match->score_home} : {$match->score_away}</td>
+	    <td class="team-name center">{$match->ref('team', 'away_id')->name}</td>
+	</tr>
+    </table>
+    
+    <table class="match-table">
+	<tr>
+	    <th colspan="2">Góly</th>
+	</tr>
+	{foreach $goals as $goal}
+	<tr>
+	    <td class="minute"><img src="{$basePath}/images/match/goal.png" alt="Gól" />{$goal->minute}.</td>
+	    <td><a href="{link Player:single $goal->player->id}">{$goal->player->name} {$goal->player->surname}</a> {if $goal->penalty}(z pen.){/if}</td>
+	</tr>
+	{/foreach}
+    </table>
+    
+    <table class="match-table">
+	<tr>
+	    <th colspan="2">Karty</th>
+	</tr>
+	{foreach $cards as $card}
+	{if $card->event_type->name == 'žlutá karta'}
+	    {var $color = 'yellowcard'}
+	{else}
+	    {var $color = 'redcard'}
+	{/if}
+	<tr>
+	    <td class="minute"><img src="{$basePath}/images/match/{$color}.png" alt="Karta" />{if $card->minute}{$card->minute}.{/if}</td>
+	    <td><a href="{link Player:single $card->player->id}">{$card->player->name} {$card->player->surname}</a></td>
+	</tr>
+	{/foreach}
+    </table>
+    
+    <table class="match-table">
+	<tr>
+	    <th>Sestava</th>
+	</tr>
+	<tr>
+	    <td>
+	    {foreach $match->related('player_match')->order('number ASC') as $player}
+		<a href="{link Player:single $player->player->id}">{$player->player->name} {$player->player->surname}</a>
+		{foreach $subs as $sub}
+		    {if $sub->player_out_id == $player->player->id}
+			({$sub->minute}. <a href="{link Player:single $sub->ref('player', 'player_in_id')->id}">{$sub->ref('player', 'player_in_id')->name} {$sub->ref('player', 'player_in_id')->surname}</a>)
+		    {/if}
+		{/foreach}
+		{sep}, {/sep}
+	    {/foreach}
+	    </td>
+	</tr>
+    </table>
+    
+    {if $allowedEdit}
+	<div class="links">
+	    <a href="{link Match:edit $match->id}">Upravit zápas</a>
+	</div>
+    {/if}
+    
+    {if $article}
+	<div class="article-full">
+	    <h1>{$article->title}</h1>
+	    <div class="info">
+		<span class="created"><strong>Vydáno: </strong>{$article->created|date:'j.n.Y H:i'}</span>
+		<span class="category"><strong>Kategorie: </strong>{$article->category->name}</span>
+		<span class="author"><strong>Autor: </strong>{$article->user->name}</span>
+	    </div>
+	    <div class="text">{!$article->text}</div>
+	</div>
+    {/if}
     
 </div>
+
+{/block}

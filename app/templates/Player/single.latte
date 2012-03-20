@@ -11,8 +11,8 @@
 
 <div class="player-profile">
     <h1>{$fullName}</h1>
-    <div class="player-info">
-	<div class="player-photo"><img src="{$basePath}/images/players/{$photo|webalize}.png"/></div>
+    <div class="player-info clearfix">
+	<div class="player-photo"><img src="{$basePath}/images/players/{$photo|webalize}.png" alt="{$fullName}" /></div>
 	<div class="player-details">
 	    <table class="format">
 		<tr><td class="title">Datum narození:</td><td>{$player->birth|date:'d.m.Y'}</td></tr>
@@ -22,4 +22,33 @@
 	    </table>
 	</div>
     </div>
+    
+    <div class="season-matches">
+	<h2>Přehled zápasů - {$currentSeason}</h2>
+	<table class="format">
+	    <tr>
+		<th></th>
+		<th></th>
+		<th></th>
+		<th></th>
+		<th title="Minuty">M</th>
+		<th title="Góly">G</th>
+		<th title="Žluté karty">ŽK</th>
+		<th title="Červené karty">ČK</th>
+	    </tr>
+	{foreach $matches as $match}
+	    <tr>
+		<td>{$match->date|date:'d.m.Y'}</td>
+		<td>{$match->competition->name}</td>
+		<td>{$match->ref('team', 'home_id')->name} - {$match->ref('team', 'away_id')->name}</td>
+		<td><a href="{link Match:single $match->id}">{$match->score_home}:{$match->score_away}</a></td>
+		<td>{$minutes[$match->id]}</td>
+		<td>{$goals[$match->id]}</td>
+		<td>{$yellow_cards[$match->id]}</td>
+		<td>{$red_cards[$match->id]}</td>
+	    </tr>
+	{/foreach}
+	</table>
+    </div>
+    
 </div>

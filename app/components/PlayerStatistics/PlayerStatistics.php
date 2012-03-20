@@ -34,7 +34,8 @@ class PlayerStatistics extends UI\Control
 	    $subs_in = $this->model->getSubstitutions()->where('player_in_id = ?', $player->id);
 	    $subs_out = $this->model->getSubstitutions()->where('player_out_id = ?', $player->id);
 	    $yellow_cards = $this->model->getEvents()->where('player_id = ? AND match.competition.name = ? AND event_type.name = ?', $player->id, 'IV. třída', 'žlutá karta')->count();
-	    $red_cards = $this->model->getEvents()->where('player_id = ? AND match.competition.name = ? AND event_type.name = ?', $player->id, 'IV. třída', 'červená karta')->count();
+	    $red_cards_count = $this->model->getEvents()->where('player_id = ? AND match.competition.name = ? AND event_type.name = ?', $player->id, 'IV. třída', 'červená karta')->count();
+	    $red_cards = $this->model->getEvents()->where('player_id = ? AND match.competition.name = ? AND event_type.name = ?', $player->id, 'IV. třída', 'červená karta');
 	    
 	    $mins = 90 * $starting;
 	    foreach ($subs_in as $sub) {
@@ -43,6 +44,10 @@ class PlayerStatistics extends UI\Control
 	    
 	    foreach ($subs_out as $sub) {
 		$mins -= (90 - $sub->minute);
+	    }
+	    
+	    foreach ($red_cards as $card) {
+		$mins -= (90 - $card->minute);
 	    }
 	    
 	    $values = array(
@@ -54,7 +59,7 @@ class PlayerStatistics extends UI\Control
 		'goals_pen' => $goals_pen,
 		'mins' => $mins,
 		'y_cards' => $yellow_cards,
-		'r_cards' => $red_cards,
+		'r_cards' => $red_cards_count,
 	    );
 	    $stats[$player->id] = $values;
 	}

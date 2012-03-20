@@ -2,7 +2,7 @@
 
     <div class="title">Střelci týmu</div>
     
-    <table>
+    <table class="block-table">
     {foreach $scorers as $scorer}
 	<tr>
 	    <td><a href="{link Player:single $scorer->id}">{$scorer->name} {$scorer->surname}</a></td>
