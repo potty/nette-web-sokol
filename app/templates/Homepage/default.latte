@@ -1,10 +1,39 @@
 {block content}
 
+{if $stickyArticle}
+{if $stickyArticle->image_id}
+    {var $image = $stickyArticle->image->path}
+{else}
+    {var $image = $stickyArticle->category->image->path}
+{/if}
+<div class="article sticky">
+    <a href="{link Article: $stickyArticle->id}"><img class="teaser" src="{$basePath}/{$image}" title="{$stickyArticle->title}" alt="{$stickyArticle->title}" /></a>
+    <h2><a href="{link Article: $stickyArticle->id}">{$stickyArticle->title|upper}</a></h2>
+    <div class="info">
+	<span class="created">{$stickyArticle->created|date:'j.n.Y H:i'}</span>
+	<span class="delimiter">|</span>
+	<span class="category">{$stickyArticle->category->name}</span>
+	<span class="delimiter">|</span>
+	<span class="author">{$stickyArticle->user->login}</span>
+	<span class="delimiter">|</span>
+	<span class="comment-count" title="Počet komentářů">
+	    <a href="{link Article: $stickyArticle->id}#comments"><img src="{$basePath}/images/comments.gif" alt="Počet komentářů" /> {$stickyArticle->related('comment')->count()}</a>
+	</span>
+    </div>
+    <p class="text">{!$stickyArticle->text|striptags|truncate:440}</p>
+</div>
+{/if}
+
 {snippet articles}
 
 {foreach $articles as $article}
+{if $article->image_id}
+    {var $image = $article->image->path}
+{else}
+    {var $image = $article->category->image->path}
+{/if}
 <div class="article">
-    <a href="{link Article: $article->id}"><img class="teaser" src="{$basePath}/images/articles/training-night.jpg"/></a>
+    <a href="{link Article: $article->id}"><img class="teaser" src="{$basePath}/{=$image|thumb:165:110}" title="{$article->title}" alt="{$article->title}" /></a>
     <h2><a href="{link Article: $article->id}">{$article->title}</a></h2>
     <div class="info">
 	<span class="created">{$article->created|date:'j.n.Y H:i'}</span>

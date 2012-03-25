@@ -14,6 +14,7 @@ class HomepagePresenter extends BasePresenter
      */
     public function renderDefault()
     {
+	$this->template->stickyArticle = $this->model->getArticles()->where('sticky', TRUE)->fetch();
 	// create visual paginator control
 	$vp = new VisualPaginator($this, 'vp');
 	$paginator = $vp->getPaginator();
@@ -21,6 +22,7 @@ class HomepagePresenter extends BasePresenter
 	$paginator->itemCount = count($this->model->getArticles());
 	
 	$this->template->articles = $this->model->getArticles()
+		->where('sticky', FALSE)
 		->order('created DESC')
 		->limit($paginator->itemsPerPage, $paginator->offset);
 	if ($this->isAjax())

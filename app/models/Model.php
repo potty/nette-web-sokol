@@ -121,5 +121,25 @@ class Model extends Nette\Object
     {
 	return $this->database->table('comment');
     }
+    
+    public function getImages()
+    {
+	return $this->database->table('image');
+    }
+    
+    public function getRoles()
+    {
+	return $this->database->table('role');
+    }
+    
+    /**
+     * Checks if login is already used
+     * @param Nette\Forms\IControl $control
+     * @return boolean 
+     */
+    public static function isLoginAvailable(Nette\Forms\IControl $control)
+    {
+	return !(bool) Nette\Environment::getService('model')->getUsers()->where('login', $control->getValue())->count();
+    }
 
 }

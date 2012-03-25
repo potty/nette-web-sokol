@@ -2,6 +2,12 @@
 
 {block content}
 
+{if $allowedEdit}
+    <div class="links">
+	<a href="{link Match:edit $match->id}" class="button">Upravit zápas</a>
+    </div>
+{/if}
+
 <div class="match-overview">
     
     <table class="match-table">
@@ -11,9 +17,9 @@
 	    <th class="right">{$match->competition->name} {if $match->round} - {$match->round}{/if}</th>
 	</tr>
 	<tr>
-	    <td class="team-name center">{$match->ref('team', 'home_id')->name}</td>
+	    <td class="team-name center"><a href="{link Team:single $match->home_id}">{$match->ref('team', 'home_id')->name}</a></td>
 	    <td class="score center">{$match->score_home} : {$match->score_away}</td>
-	    <td class="team-name center">{$match->ref('team', 'away_id')->name}</td>
+	    <td class="team-name center"><a href="{link Team:single $match->away_id}">{$match->ref('team', 'away_id')->name}</a></td>
 	</tr>
     </table>
     
@@ -65,24 +71,32 @@
 	</tr>
     </table>
     
-    {if $allowedEdit}
-	<div class="links">
-	    <a href="{link Match:edit $match->id}">Upravit zápas</a>
-	</div>
-    {/if}
+    
     
     {if $article}
+	{if $allowedEditArticle}
+	<div class="links">
+	    <a href="{link Article:edit $article->id}" class="button">Upravit článek</a>
+	</div>
+	{/if}
 	<div class="article-full">
 	    <h1>{$article->title}</h1>
 	    <div class="info">
 		<span class="created"><strong>Vydáno: </strong>{$article->created|date:'j.n.Y H:i'}</span>
 		<span class="category"><strong>Kategorie: </strong>{$article->category->name}</span>
-		<span class="author"><strong>Autor: </strong>{$article->user->name}</span>
+		<span class="author"><strong>Autor: </strong>{$article->user->login}</span>
 	    </div>
 	    <div class="text">{!$article->text}</div>
 	</div>
+	{control comments}
+
+	<h2>Přidat komentář</h2>
+	{control commentsForm}
+    
     {/if}
     
 </div>
+
+
 
 {/block}

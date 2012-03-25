@@ -49,6 +49,17 @@
 
 <body>
 
+    <div id="fb-root"></div>
+    <script>
+	(function(d, s, id) {
+	  var js, fjs = d.getElementsByTagName(s)[0];
+	  if (d.getElementById(id)) return;
+	  js = d.createElement(s); js.id = id;
+	  js.src = "//connect.facebook.net/cs_CZ/all.js#xfbml=1&appId=321874377867113";
+	  fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));
+    </script>
+    
     <div class="container_12">
 	
 	<div class="grid_12" id="header">
@@ -58,11 +69,17 @@
 	    <div class="grid_4 omega login-search">
 		<div class="user">
 		{if $user->isLoggedIn()}
+		    <img src="{$basePath}/images/user.png" alt="User" />
 		    <span class="name">{$user->getIdentity()->login} ({$user->getIdentity()->name} {$user->getIdentity()->surname})</span> |
 		    <a n:href="signOut!">Odhlásit</a>
 		{else}
-		    <a href="{link Sign:in}">Přihlásit</a>
+		    <a href="{link Sign:in}">Přihlásit</a> | <a href="{link Page:register}">Registrace</a>
 		{/if}
+		</div>
+		<div id="search">
+		    {form searchForm}
+		    {input query}{input submit}
+		    {/form searchForm}
 		</div>
 	    </div>
 	</div>
@@ -91,11 +108,16 @@
 		{include './blocks/matches.latte', lastMatch => $lastMatch}
 		{include './blocks/table.latte', table => $table}
 		{include './blocks/scorers.latte', scorers => $scorers}
+		{include './blocks/fb.latte'}
 	    </div>
 	</div>
 	<div class="clear"></div>
 	
-	<div class="grid_12" id="footer">Potty © 2012</div>
+	<div class="grid_12" id="footer">
+	    <div class="inner-wrapper">
+		Copyright © 2012 Pavel Potáček | <a href="mailto:pottyy@seznam.cz">Kontakt</a>
+	    </div>
+	</div>
 	
     </div>
     

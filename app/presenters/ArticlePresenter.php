@@ -15,11 +15,7 @@ class ArticlePresenter extends BasePresenter {
     
     public function beforeRender() {
 	parent::beforeRender();
-	if ($this->user->isLoggedIn()) {
-	    $this->template->allowedEdit = $this->acl->isAllowed($this->user->identity->roles[0], 'article', 'edit') && $this->getUser()->isLoggedIn();
-	} else {
-	    $this->template->allowedEdit = FALSE;
-	}
+	$this->template->allowedEdit = $this->isUserAllowedToAction('article', 'edit');
     }
     
     public function actionDefault($id) 
@@ -69,6 +65,8 @@ class ArticlePresenter extends BasePresenter {
 	$form = new Form();
 	$form->addSelect('category_id', 'Kategorie:', $this->model->getCategories()->fetchPairs('id', 'name'))
 		->addRule(Form::FILLED, 'Je nutné vybrat kategorii.');
+	$form->addSelect('image_id', 'Obrázek:', $this->model->getImages()->fetchPairs('id', 'description'))
+		->setPrompt('- žádný -');
 	$form->addText('title', 'Titulek:', 40, 100)
 		->addRule(Form::FILLED, 'Je nutné zadat titulek.');
 	$form->addTextArea('text', 'Text')
@@ -76,6 +74,7 @@ class ArticlePresenter extends BasePresenter {
 		->addRule(Form::FILLED, 'Je nutné zadat text.');
 	$form->addSelect('match_id', 'Zápas:', $this->fetchPairsMatches())
 		->setPrompt('- žádný -');
+	$form->addCheckbox('sticky', 'Přilepit na hlavní stránce');
 	$form->addSubmit('create', 'Přidat');
 	$form->onSuccess[] = callback($this, 'articleAddFormSubmitted');
 	return $form;
@@ -89,8 +88,13 @@ class ArticlePresenter extends BasePresenter {
 	    'text' => $form->values->text,
 	    'created' => new DateTime(),
 	    'user_id' => $this->user->getId(),
+	    'sticky' => $form->values->sticky,
 	);
 	if ($form->values->match_id != '') $data['match_id'] = $form->values->match_id;
+	if ($form->values->image_id != '') $data['image_id'] = $form->values->image_id;
+	if ($form->values->sticky == TRUE) {
+	    $this->unsetStickyArticle();
+	}
 	$this->model->getArticles()->insert($data);
 	$this->flashMessage('Článek přidán.', 'success');
 	$this->redirect('Homepage:');
@@ -102,6 +106,8 @@ class ArticlePresenter extends BasePresenter {
 	$form->addHidden('id');
 	$form->addSelect('category_id', 'Kategorie:', $this->model->getCategories()->fetchPairs('id', 'name'))
 		->addRule(Form::FILLED, 'Je nutné vybrat kategorii.');
+	$form->addSelect('image_id', 'Obrázek:', $this->model->getImages()->fetchPairs('id', 'description'))
+		->setPrompt('- žádný -');
 	$form->addText('title', 'Titulek:', 40, 100)
 		->addRule(Form::FILLED, 'Je nutné zadat titulek.');
 	$form->addDate('created', 'Datum:', DateInput::TYPE_DATETIME)
@@ -111,6 +117,7 @@ class ArticlePresenter extends BasePresenter {
 		->addRule(Form::FILLED, 'Je nutné zadat text.');
 	$form->addSelect('match_id', 'Zápas:', $this->fetchPairsMatches())
 		->setPrompt('- žádný -');
+	$form->addCheckbox('sticky', 'Přilepit na hlavní stránce');
 	$form->addSubmit('save', 'Uložit');
 	$form->onSuccess[] = callback($this, 'articleEditFormSubmitted');
 	return $form;
@@ -124,8 +131,13 @@ class ArticlePresenter extends BasePresenter {
 	    'text' => $form->values->text,
 	    'created' => $form->values->created,
 	    'user_id' => $this->user->getId(),
+	    'sticky' => $form->values->sticky,
 	);
 	if ($form->values->match_id != '') $data['match_id'] = $form->values->match_id;
+	if ($form->values->image_id != '') $data['image_id'] = $form->values->image_id;
+	if ($form->values->sticky == TRUE) {
+	    $this->unsetStickyArticle();
+	}
 	$this->model->getArticles()->find($form->values->id)->update($data);
 	$this->flashMessage('Článek aktualizován.', 'success');
 	$this->redirect('Homepage:');
@@ -139,6 +151,7 @@ class ArticlePresenter extends BasePresenter {
 	    $form['author']->setAttribute('readonly', 'readonly');
 	    $form['is_guest']->setValue(0);
 	}
+	$form['article_id']->setValue($this->article->id);
 	$form->onSuccess[] = callback($form, 'process');
 	return $form;
     }
@@ -146,6 +159,17 @@ class ArticlePresenter extends BasePresenter {
     protected function createComponentComments()
     {
 	return new Comments($this->model, $this->article->id);
+    }
+    
+    /**
+     * Finds all sticky articles and set 'sticky' to 'false'
+     */
+    private function unsetStickyArticle()
+    {
+	$articles = $this->model->getArticles()->where('sticky', TRUE);
+	foreach ($articles as $article) {
+	    $this->model->getArticles()->find($article->id)->update(array('sticky' => 0));
+	}
     }
 
 }

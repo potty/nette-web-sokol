@@ -1,0 +1,22 @@
+{var $title = 'Obrázky'}
+
+{block content}
+
+<div class="links"><a href="{link Image:add}" class="button">Přidat</a></div>
+
+<h1>Výpis obrázků</h1>
+
+<table class="format">
+    <tr>
+	<th>Popis</th>
+	<th>Cesta k souboru</th>
+    </tr>
+{foreach $images as $image}
+    <tr>
+	<td>{$image->description}</td>
+	<td>{$image->path}</td>
+    </tr>
+{/foreach}
+</table>
+    
+{/block}

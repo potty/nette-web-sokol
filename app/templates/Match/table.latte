@@ -1,0 +1,41 @@
+{var $title = 'Tabulka'}
+
+{block content}
+
+<h1>{$title} {$currentSeason}</h1>
+
+<table class="format">
+    <tr>
+	<th>#</th>
+	<th>Tým</th>
+	<th title="Zápasy">Z</th>
+	<th title="Výhry">V</th>
+	<th title="Remízy">R</th>
+	<th title="Prohry">P</th>
+	<th class="center">Skóre</th>
+	<th title="Gólový rozdíl">GR</th>
+	<th title="Body">B</th>
+	<th>Forma</th>
+    </tr>
+{foreach $table as $team}
+    <tr n:class="$team['team'] == 'Věteřov' ? highlight">
+	<td>{$iterator->counter}.</td>
+	<td><a href="{link Team:single $team['team_id']}">{$team['team']}</a></td>
+	<td>{$team['matches']}</td>
+	<td>{$team['wins']}</td>
+	<td>{$team['draws']}</td>
+	<td>{$team['loses']}</td>
+	<td class="center">{$team['goals_for']}:{$team['goals_against']}</td>
+	<td>{$team['goal_diff']}</td>
+	<td class="bold">{$team['points']}</td>
+	<td>
+	    {foreach $team['form'] as $form}
+		{var $tooltip = $form['match']->ref('team', 'home_id')->name . ' ' . $form['match']->score_home . ':' . $form['match']->score_away . ' ' . $form['match']->ref('team', 'away_id')->name}
+		<a href="{link Match:single $form['match']->id}" class="form form-{$form['status']}" title="{$form['match']->date|date:'j.n.Y'} - {$tooltip}">{$form['status']}</a>
+	    {/foreach}
+	</td>
+    </tr>
+{/foreach}
+</table>
+
+{/block}

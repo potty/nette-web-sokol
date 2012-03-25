@@ -6,6 +6,11 @@
     <div class="links"><a href="{link Article:edit $article->id}" class="button">Upravit</a></div>
 {/if}
 
+{if $article->image_id}
+    {var $image = $article->image->path}
+{else}
+    {var $image = $article->category->image->path}
+{/if}
 <div class="article-full">
     <h1>{$article->title}</h1>
     <div class="info">
@@ -13,6 +18,7 @@
 	<span class="category"><strong>Kategorie: </strong>{$article->category->name}</span>
 	<span class="author"><strong>Autor: </strong>{$article->user->login}</span>
     </div>
+    <img class="teaser" src="{$basePath}/{$image}" title="{$article->title}" alt="{$article->title}" />
     <div class="text">{!$article->text}</div>
 </div>
 

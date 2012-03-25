@@ -1,0 +1,33 @@
+{var $title = 'Výsledky hledání slova "' . $searchExpr . '"'}
+
+{block content}
+
+<h1>{$title}:</h1>
+
+<h2>Počet nalezených výsledků: {count($searchResults)}</h2>
+
+{foreach $searchResults as $article}
+{if $article->image_id}
+    {var $image = $article->image->path}
+{else}
+    {var $image = $article->category->image->path}
+{/if}
+<div class="article">
+    <a href="{link Article: $article->id}"><img class="teaser" src="{$basePath}/{=$image|thumb:165:110}" title="{$article->title}" alt="{$article->title}" /></a>
+    <h2><a href="{link Article: $article->id}">{$article->title}</a></h2>
+    <div class="info">
+	<span class="created">{$article->created|date:'j.n.Y H:i'}</span>
+	<span class="delimiter">|</span>
+	<span class="category">{$article->category->name}</span>
+	<span class="delimiter">|</span>
+	<span class="author">{$article->user->login}</span>
+	<span class="delimiter">|</span>
+	<span class="comment-count" title="Počet komentářů">
+	    <a href="{link Article: $article->id}#comments"><img src="{$basePath}/images/comments.gif" alt="Počet komentářů" /> {$article->related('comment')->count()}</a>
+	</span>
+    </div>
+    <p class="text">{!$article->text|striptags|truncate:240}</p>
+</div>
+{/foreach}
+
+{/block}

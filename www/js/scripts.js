@@ -127,4 +127,11 @@ $(function() {
        $('.toggable').toggle();
    });
    
+   // Adds red star after label of required form field
+   $('label.required').append('<span class="red"> *</span>');
+   
+   // ColorBox init
+   // TODO: Hazi EXCEPTIONS, pokud na strance neni includovany colorbox.js
+   $('a.colorbox').colorbox();
+   
 });

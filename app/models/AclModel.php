@@ -18,9 +18,16 @@ class AclModel
 	$this->acl->addResource('player');
 	$this->acl->addResource('training');
 	$this->acl->addResource('match');
+	$this->acl->addResource('page');
+	$this->acl->addResource('team');
+	$this->acl->addResource('image');
+	$this->acl->addResource('admin');
 	
-	$this->acl->allow('guest', array('sign', 'homepage', 'article', 'player', 'match'), array('in', 'default', 'single'));
+	$this->acl->allow('guest', array('sign', 'homepage', 'article', 'player', 'match', 'team'), array('in', 'default', 'single'));
+	$this->acl->allow('guest', array('page'), array('register', 'search'));
+	
 	$this->acl->allow('member', array('sign', 'training', 'match'), array('out', 'default', 'single'));
+	
 	$this->acl->allow('admin', Nette\Security\Permission::ALL, Nette\Security\Permission::ALL);
     }
     

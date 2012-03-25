@@ -1,0 +1,25 @@
+{var $title = 'Klub'}
+
+{block head}
+<script type='text/javascript' src="{$basePath}/js/jquery.colorbox-min.js"></script>
+<link rel="stylesheet" type="text/css" href="{$basePath}/css/colorbox/colorbox.css" />
+{/block}
+
+{block content}
+
+<h1>TJ Sokol Věteřov</h1>
+
+<h2>Info</h2>
+
+<h2>Kontakt</h2>
+
+<h2>Představenstvo</h2>
+
+<div class="center">
+    {var $imagePath = 'images/club/hriste.jpg'}
+    <a href="{$basePath}/{$imagePath}" class="colorbox" title="Sokol Věteřov - hřiště">
+	<img src="{$basePath}/{=$imagePath|thumb:320:180}" class="style" alt="Sokol Věteřov - hřiště" />
+    </a>
+</div>
+
+{/block}

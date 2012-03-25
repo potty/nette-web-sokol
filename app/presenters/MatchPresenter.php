@@ -18,11 +18,17 @@ class MatchPresenter extends BasePresenter {
      */
     private $id;
     
+    /**
+     * Related article 
+     */
+    private $relatedArticle;
+    
     public function beforeRender() {
 	parent::beforeRender();
 	$result = $this->model->getSeasons()->select('name')->where('id', $this->currentSeason)->fetch();
 	$this->template->currentSeason = $result['name'];
-	$this->template->allowedEdit = $this->acl->isAllowed($this->user->identity->roles[0], 'match', 'edit') && $this->getUser()->isLoggedIn();
+	$this->template->allowedEdit = $this->isUserAllowedToAction('match', 'edit');
+	$this->template->allowedEditArticle = $this->isUserAllowedToAction('article', 'edit');
     }
     
     public function renderDefault() {
@@ -94,7 +100,11 @@ class MatchPresenter extends BasePresenter {
 	$this->template->cards = $this->model->getEvents()->where('(event_type.name = ? OR event_type.name = ?) AND match_id = ?', 'žlutá karta', 'červená karta', $this->id)->order('minute ASC');
 	$this->template->subs = $this->model->getSubstitutions()->where('match_id = ?', $this->id);
 	$this->template->players = $this->model->getPlayers();
-	$this->template->article = $this->model->getArticles()->where('match_id = ?', $this->id)->fetch();
+	$result = $this->model->getArticles()->where('match_id = ?', $this->id)->fetch();
+	if ($result) {
+	    $this->relatedArticle = $result->id;
+	}
+	$this->template->article = $result;
     }
     
     public function renderEdit()
@@ -107,6 +117,12 @@ class MatchPresenter extends BasePresenter {
     public function renderCompetition()
     {
 	$this->template->matches = $this->model->getMatches()->where('competition.name = ?', 'IV. třída')->order('date ASC');
+    }
+    
+    public function renderTable()
+    {
+	$teams = $this->model->getTeams()->where('competition.name = ?', 'IV. třída');
+	$this->template->table = $this->getCompetitionTable($teams);
     }
     
     protected function createComponentMatchAddForm()
@@ -127,13 +143,9 @@ class MatchPresenter extends BasePresenter {
 		->setPrompt('- Vyberte -')
 		->addRule(Form::FILLED, 'Je nutné vybrat hostující tým.');
 	$form->addText('score_home', 'Skóre domácí:')
-		->setType('number')
-		->addRule(Form::INTEGER, 'Skóre musí být číslo')
-		->addRule(Form::RANGE, 'Skóre musí být od 0 do 20', array(0, 20));
+		->setType('number');
 	$form->addText('score_away', 'Skóre hosté:')
-		->setType('number')
-		->addRule(Form::INTEGER, 'Skóre musí být číslo')
-		->addRule(Form::RANGE, 'Skóre musí být od 0 do 20', array(0, 20));
+		->setType('number');
 	$form->addCheckbox('played', 'Odehráno');
 	$form->addSubmit('create', 'Vytvořit');
 	$form->onSuccess[] = callback($this, 'matchAddFormSubmitted');
@@ -284,6 +296,24 @@ class MatchPresenter extends BasePresenter {
 	$db = $this->context->database;
 	$players = $this->model->getPlayers()->where('team.name', 'Věteřov')->order('surname ASC', 'name ASC');
 	return new StartingEleven($players, $this->id, $this->model, $db);
+    }
+    
+    protected function createComponentCommentsForm()
+    {
+	$form = new CommentsForm($this->model);
+	if ($this->getUser()->isLoggedIn()) {
+	    $form['author']->setDefaultValue($this->getUser()->getIdentity()->login);
+	    $form['author']->setAttribute('readonly', 'readonly');
+	    $form['is_guest']->setValue(0);
+	}
+	$form['article_id']->setValue($this->relatedArticle);
+	$form->onSuccess[] = callback($form, 'process');
+	return $form;
+    }
+    
+    protected function createComponentComments()
+    {
+	return new Comments($this->model, $this->relatedArticle);
     }
 
 }

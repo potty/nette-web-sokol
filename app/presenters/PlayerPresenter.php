@@ -1,6 +1,7 @@
 <?php
 
 use Nette\Application\UI\Form;
+use Nette\Image;
 
 /**
  * Description of PlayerPresenter

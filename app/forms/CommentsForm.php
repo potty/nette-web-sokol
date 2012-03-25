@@ -22,11 +22,13 @@ class CommentsForm extends Nette\Application\UI\Form {
 	$this->addHidden('is_guest')
 		->setDefaultValue(1);
 	
+	$this->addHidden('article_id');
+	
 	$this->addText('author', 'Jméno:')
-		->addRule(Form::FILLED, 'Je nutné vyplnit jméno.');
+		->setRequired('Je nutné vyplnit jméno.');
 	
 	$this->addTextArea('text', 'Komentář:')
-		->addRule(Form::FILLED, 'Je nutné vyplnit komentář.');
+		->setRequired('Je nutné vyplnit komentář.');
 	
 	$this->addSubmit('send', 'Odeslat');
 	
@@ -43,9 +45,9 @@ class CommentsForm extends Nette\Application\UI\Form {
 	    'created' => new DateTime(),
 	    'is_guest' => $values->is_guest,
 	    'ip_address' => Nette\Environment::getHttpRequest()->getRemoteAddress(),
-	    'article_id' => (int) $this->presenter->getParameter('id'),
+	    'article_id' => $values->article_id,
 	);
-	$this->model->getComments()->insert($data);
+	$id = $this->model->getComments()->insert($data);
 	$this->presenter->flashMessage('Komentář přidán.', 'success');
 	$this->presenter->redirect("this#comment-$id");
     }

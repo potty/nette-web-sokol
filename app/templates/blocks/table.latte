@@ -6,11 +6,13 @@
     {foreach $table as $team}
 	<tr n:class="$team['team'] == 'Věteřov' ? highlight">
 	    <td>{$iterator->counter}.</td>
-	    <td>{$team['team']}</td>
+	    <td><a href="{link Team:single $team['team_id']}">{$team['team']}</a></td>
 	    <td>{$team['matches']}</td>
 	    <td>{$team['points']}</td>
 	</tr>
     {/foreach}
     </table>
+    
+    <a href="{link Match:table}" class="alt-link">Detailní tabulka</a>
     
 </div>
