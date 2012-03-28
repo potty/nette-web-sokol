@@ -94,6 +94,10 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
 	
 	$teams = $this->model->getTeams()->where('competition.name = ?', 'IV. třída');
 	$this->template->table = $this->getCompetitionTable($teams, TRUE);
+	$access = array (
+	    'training' => $this->isUserAllowedToAction('training', 'default'),
+	);
+	$this->template->accessAllowed = $access;
 	if ($this->isAjax()) {
 	    $this->invalidateControl('flash');
 	}

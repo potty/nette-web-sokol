@@ -10,7 +10,7 @@ class AclModel
 	
 	$this->acl->addRole('guest');
 	$this->acl->addRole('member', 'guest');
-	$this->acl->addRole('admin', 'member');
+	$this->acl->addRole('admin');
 	
 	$this->acl->addResource('article');
 	$this->acl->addResource('sign');
@@ -23,10 +23,27 @@ class AclModel
 	$this->acl->addResource('image');
 	$this->acl->addResource('admin');
 	
-	$this->acl->allow('guest', array('sign', 'homepage', 'article', 'player', 'match', 'team'), array('in', 'default', 'single'));
-	$this->acl->allow('guest', array('page'), array('register', 'search'));
+	$this->acl->allow('guest', 
+	    array(
+		'sign', 
+		'homepage', 
+		'article', 
+		'player', 
+		'match', 
+		'team'
+	    ), 
+	    array(
+		'in', 
+		'default', 
+		'single', 
+		'statistics', 
+		'competition',
+		'table',
+	    )
+	);
+	$this->acl->allow('guest', array('page'), array('register', 'search', 'club'));
 	
-	$this->acl->allow('member', array('sign', 'training', 'match'), array('out', 'default', 'single'));
+	$this->acl->allow('member', array('sign', 'training'), array('out', 'default', 'single'));
 	
 	$this->acl->allow('admin', Nette\Security\Permission::ALL, Nette\Security\Permission::ALL);
     }
