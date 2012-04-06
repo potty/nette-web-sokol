@@ -1,8 +1,14 @@
 {var $title = 'Registrace'}
 
+{var $robots = 'noindex'}
+
 {block content}
 
 <h1>{$title}</h1>
+
+<div class="box-warning">
+Registrace slouží pouze pro členy klubu. Účet musí být aktivován administrátorem.
+</div>
 
 {control registerForm}
 

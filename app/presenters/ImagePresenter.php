@@ -4,6 +4,11 @@ use Nette\Application\UI\Form;
 
 class ImagePresenter extends BasePresenter {
     
+    public function beforeRender() {
+	parent::beforeRender();
+	$this->template->robots = 'noindex, nofollow';
+    }
+
     public function renderDefault() {
 	$this->template->images = $this->model->getImages();
     }

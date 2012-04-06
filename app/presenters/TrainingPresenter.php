@@ -13,6 +13,12 @@ class TrainingPresenter extends BasePresenter {
     private $training;
     private $id = null;
     
+    public function beforeRender()
+    {
+	parent::beforeRender();
+	$this->template->robots = 'noindex, nofollow';
+    }
+    
     /**
      * Renders list of all trainings
      */

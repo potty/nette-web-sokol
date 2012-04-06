@@ -22,6 +22,7 @@ class PlayerPresenter extends BasePresenter {
 	parent::beforeRender();
 	$result = $this->model->getSeasons()->select('name')->where('id', $this->currentSeason)->fetch();
 	$this->season = $result['name'];
+	$this->template->allowedViewTraining = $this->isUserAllowedToAction('training', 'default');
     }
     
     public function renderDefault()
@@ -81,12 +82,36 @@ class PlayerPresenter extends BasePresenter {
 	    }
 	    
 	}
+	
+	// trainings
+	$training_total = 0;
+	$training_part_num = 0;
+	$percentage = 0;
+	$participating = array();
+	$trainings = $this->model->getTrainings()->where('season.name = ?', $this->season)->order('date DESC');
+	foreach ($trainings as $training) {
+	    $training_total++;
+	    $count = $this->model->getPlayersTrainings()->where('player_id = ? AND training_id = ?', $this->player->id, $training->id)->count();
+	    if ($count > 0) {
+		$training_part_num++;
+		$participating[$training->id] = true;
+	    } else {
+		$participating[$training->id] = false;
+	    }
+	}
+	if ($training_part_num != 0) $percentage = ($training_part_num / $training_total) * 100;
+	
 	$this->template->yellow_cards = $yellow_cards;
 	$this->template->red_cards = $red_cards;
 	$this->template->minutes = $minutes;
 	$this->template->goals = $goals;
 	$this->template->matches = $matches;
 	$this->template->currentSeason = $this->season;
+	$this->template->trainings = $trainings;
+	$this->template->trainingParticipate = $participating;
+	$this->template->trainingsTotal = $training_total;
+	$this->template->trainingsPartNum = $training_part_num;
+	$this->template->trainingsPercentage = $percentage;
     }
     
     public function renderStatistics()

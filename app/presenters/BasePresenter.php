@@ -73,6 +73,8 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
     {
 	parent::beforeRender();
 	//$this->template->menu = $this->menu;
+	$this->template->robots = 'index, follow';
+	
 	LayoutHelpers::$thumbDirUri = 'images/thumbs';
 	$this->template->registerHelper('thumb', 'LayoutHelpers::thumb');
 	

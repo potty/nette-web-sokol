@@ -15,16 +15,18 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
 	<meta name="description" content="Oficiální stránky fotbalového klubu Sokol Věteřov.">
+	<meta name="keywords" content="věteřov, sokol, fotbal" />
+	<meta name="author" content="Pavel Potáček" />
 	<meta name="robots" content="{$robots}" n:ifset="$robots">
 
-	<title>{ifset $title}{$title} &#124; {/ifset}Sokol Věteřov</title>
+	<title>{ifset $title}{$title} &#124; Sokol Věteřov{elseifset $titleComplete}{$titleComplete}{else}Sokol Věteřov{/ifset}</title>
 
 	<link rel="stylesheet" href="{$basePath}/css/reset.css" />
 	<link rel="stylesheet" href="{$basePath}/css/text.css" />
 	<link rel="stylesheet" href="{$basePath}/css/960.css" />
 	<link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/css/screen.css" type="text/css">
 	<link rel="stylesheet" media="print" href="{$basePath}/css/print.css" type="text/css">
-	<link rel="shortcut icon" href="{$basePath}/favicon.ico" type="image/x-icon">
+	{**<link rel="shortcut icon" href="{$basePath}/favicon.ico" type="image/x-icon">*}
 	<link rel="stylesheet/less" type="text/css" href="{$basePath}/css/style.less">
 	<link type="text/css" href="{$basePath}/css/ui-lightness/jquery-ui-1.8.17.custom.css" rel="Stylesheet" />
 	
@@ -45,6 +47,7 @@
 	<script type="text/javascript" src="{$basePath}/js/ajax.js"></script>
 	
 	{block head}{/block}
+	{include './blocks/ganalytics.latte'}
 </head>
 
 <body>
