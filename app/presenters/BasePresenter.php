@@ -58,6 +58,8 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
 	}
     }
     
+    
+    
     protected function createTemplate($class = NULL)
     {
 	$template = parent::createTemplate($class);
@@ -68,6 +70,8 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
 	});
 	return $template;
     }
+    
+    
     
     public function beforeRender()
     {
@@ -82,19 +86,27 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
 		->where('played = ? AND (home_id = ? OR away_id =?)', 1, 1, 1)
 		->order('date DESC')
 		->limit(1);
+	
 	$this->template->nextMatch = $this->model->getMatches()
 		->where('played = ? AND (home_id = ? OR away_id =?)', 0, 1, 1)
 		->order('date ASC')
 		->limit(1);
+	
 	$this->template->scorers = $this->model->getEvents()
 		->select('player.id AS id, player.name AS name, player.surname AS surname, COUNT(*) AS goals')
+		->where('match.season_id', $this->currentSeason)
 		->where('event_type.name', 'gól')
 		->where('match.competition.name', 'IV. třída')
 		->group('player_id')
 		->order('goals DESC')
 		->limit(4);
 	
-	$teams = $this->model->getTeams()->where('competition.name = ?', 'IV. třída');
+	$this->template->birthdays = $this->model->getPlayers()
+		->select('id, name, surname, birth, YEAR(CURDATE()) - YEAR(birth) AS age')
+		->where('MONTH(birth) = MONTH(CURDATE())')
+		->order('birth ASC');
+	
+	$teams = $this->model->getTeams()->where('id', $this->model->getTeamsCompetitions()->select('team_id')->where('season_id = ? AND competition.name = ?', $this->currentSeason, 'IV. třída'));
 	$this->template->table = $this->getCompetitionTable($teams, TRUE);
 	$access = array (
 	    'training' => $this->isUserAllowedToAction('training', 'default'),
@@ -110,6 +122,8 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
 //	if (Nette\Diagnostics\Debugger::isEnabled())
 //	    Nette\Diagnostics\Debugger::barDump($this->template->getParameters(), 'Template variables');
 //    }
+    
+    
     
     /**
      * Sorts league table by points
@@ -141,6 +155,8 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
 	return $allowedAction;
     }
     
+    
+    
     /**
      * Return sorted competition table as array
      * @param Nette\Database\Table\Selection $teams
@@ -153,7 +169,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
 	foreach ($teams as $team) {
 	    $form = array();
 	    $points = $played = $wins = $draws = $loses = $goals_for = $goals_against = $goal_diff = 0;
-	    $matches = $this->model->getMatches()->where('competition.name = ? AND played = ? AND (home_id = ? OR away_id = ?)', 'IV. třída', 1, $team->id, $team->id)->order('date DESC');
+	    $matches = $this->model->getMatches()->where('season_id =? AND played = ? AND (home_id = ? OR away_id = ?)', $this->currentSeason, 1, $team->id, $team->id)->order('date DESC');
 	    foreach ($matches as $match) {
 		$played++;
 		$status = 'P';
@@ -209,11 +225,63 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
 	return $this->sortTable($table);
     }
     
+    
+    
+    /**
+     * Search form
+     * @return SearchForm 
+     */
     protected function createComponentSearchForm()
     {
 	$form = new SearchForm();
 	$form->onSuccess[] = callback($form, 'process');
 	return $form;
     }
+    
+    
+    
+    /**
+     * Returns array of pairs 'id' => 'player_surname player_name' 
+     * @param $all 
+     * @return array 
+     */
+    protected function fetchPairsPlayers($all = FALSE)
+    {
+	$array = array();
+	
+	if ($all) {
+		$players = $this->model->getPlayers()->order('surname ASC, name ASC');
+	} else {
+		$players = $this->model->getPlayers()->where('id', $this->model->getTeamsPlayers()->select('player_id')->where('season_id = ? AND team.name = ?', $this->currentSeason, 'Věteřov'))->order('surname ASC, name ASC');
+	}
+	
+	foreach ($players as $player) {
+	    $array[$player->id] = $player->surname . ' ' . $player->name;
+	}
+	return $array;
+    }
+    
+    
+    
+	/**
+	 * Select players by filters
+	 * @param type $team
+	 * @param type $position
+	 * @return type 
+	 */
+	protected function getPlayersByFilter($team = NULL, $position = NULL)
+	{
+		$filter = $this->model->getPlayers();
+		
+		if ($team) {
+			$filter = $filter->where('player.id', $this->model->getTeamsPlayers()->select('player_id')->where('season_id = ? AND team.name = ?', $this->currentSeason, $team));
+		}
+		
+		if ($position) {
+			$filter = $filter->where('position.name', $position);
+		}
+		
+		return $filter->order('surname ASC', 'name ASC');
+	}
     
 }

@@ -132,6 +132,16 @@ class Model extends Nette\Object
 	return $this->database->table('role');
     }
     
+    public function getTeamsPlayers()
+    {
+	    return $this->database->table('team_player');
+    }
+    
+    public function getTeamsCompetitions()
+    {
+	    return $this->database->table('team_competition');
+    }
+    
     /**
      * Checks if login is already used
      * @param Nette\Forms\IControl $control

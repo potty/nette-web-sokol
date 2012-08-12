@@ -11,7 +11,8 @@ use Vodacek\Forms\Controls\DateInput;
 class TrainingPresenter extends BasePresenter {
 
     private $training;
-    private $id = null;
+    private $id = NULL;
+    private $season = NULL;
     
     public function beforeRender()
     {
@@ -22,9 +23,15 @@ class TrainingPresenter extends BasePresenter {
     /**
      * Renders list of all trainings
      */
-    public function renderDefault() {
-	$this->template->trainings = $this->model->getTrainings()->order('date DESC');
-	$result = $this->model->getSeasons()->select('name')->where('id', $this->currentSeason)->fetch();
+    public function renderDefault($season = NULL) {	
+	if ($season == NULL) {
+		$selectedSeason = $this->currentSeason;
+	} else {
+		$selectedSeason = $season;
+	}
+	$this->season = $season;
+	$this->template->trainings = $this->model->getTrainings()->where('season_id', $selectedSeason)->order('date DESC');
+	$result = $this->model->getSeasons()->select('name')->where('id', $selectedSeason)->fetch();
 	$this->template->currentSeason = $result['name'];
     }
     
@@ -91,7 +98,24 @@ class TrainingPresenter extends BasePresenter {
      */
     protected function createComponentPlayerList()
     {
-	$players = $this->model->getPlayers()->where('team.name', 'Věteřov')->order('surname ASC', 'name ASC');
+	$players = $this->getPlayersByFilter('Věteřov');
 	return new PlayerList($players, $this->id, $this->model);
+    }
+    
+    
+    
+    /**
+     * Season select form
+     * @return SeasonForm 
+     */
+    protected function createComponentSeasonForm()
+    {
+	    $form = new SeasonForm($this->model);
+	    if ($this->season == NULL) {
+		    $form['seasonId']->setDefaultValue($this->currentSeason);
+	    } else {
+		    $form['seasonId']->setDefaultValue($this->season);
+	    }
+	    return $form;
     }
 }

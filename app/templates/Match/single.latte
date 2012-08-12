@@ -30,7 +30,7 @@
 	{foreach $goals as $goal}
 	<tr>
 	    <td class="minute"><img src="{$basePath}/images/match/goal.png" alt="Gól" />{$goal->minute}.</td>
-	    <td><a href="{link Player:single $goal->player->id}">{$goal->player->name} {$goal->player->surname}</a> {if $goal->penalty}(z pen.){/if}</td>
+	    <td><a href="{link Player:single $goal->player->id}">{$goal->player->name} {$goal->player->surname}</a> {if $goal->penalty}(z pen.){/if} {if $goal->assist}(A: <a href="{link Player:single $goal->ref('player', 'assist')->id}">{$goal->ref('player', 'assist')->name} {$goal->ref('player', 'assist')->surname}</a>){/if}</td>
 	</tr>
 	{/foreach}
     </table>

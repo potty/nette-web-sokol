@@ -8,12 +8,14 @@ class PlayerStatistics extends UI\Control
     
     private $players;
     private $model;
+    private $season;
     
-    public function __construct(Selection $players, \Model $model) 
+    public function __construct(Selection $players, \Model $model, $season) 
     {
 	parent::__construct();
 	$this->players = $players;
 	$this->model = $model;
+	$this->season = $season;
     }
     
     
@@ -26,16 +28,17 @@ class PlayerStatistics extends UI\Control
 	$this->template->setFile(__DIR__ . '/PlayerStatistics.latte');
 	$stats = array();
 	foreach ($this->players as $player) {
-	    $starting = $this->model->getPlayersMatches()->where('player_id = ?', $player->id)->count();
-	    $subs = $this->model->getSubstitutions()->where('player_in_id = ?', $player->id)->count();
-	    $subs_out_count = $this->model->getSubstitutions()->where('player_out_id = ?', $player->id)->count();
-	    $goals = $this->model->getEvents()->where('player_id = ? AND match.competition.name = ? AND event_type.name = ?', $player->id, 'IV. třída', 'gól')->count();
-	    $goals_pen = $this->model->getEvents()->where('player_id = ? AND match.competition.name = ? AND event_type.name = ? AND penalty = ?', $player->id, 'IV. třída', 'gól', true)->count();
-	    $subs_in = $this->model->getSubstitutions()->where('player_in_id = ?', $player->id);
-	    $subs_out = $this->model->getSubstitutions()->where('player_out_id = ?', $player->id);
-	    $yellow_cards = $this->model->getEvents()->where('player_id = ? AND match.competition.name = ? AND event_type.name = ?', $player->id, 'IV. třída', 'žlutá karta')->count();
-	    $red_cards_count = $this->model->getEvents()->where('player_id = ? AND match.competition.name = ? AND event_type.name = ?', $player->id, 'IV. třída', 'červená karta')->count();
-	    $red_cards = $this->model->getEvents()->where('player_id = ? AND match.competition.name = ? AND event_type.name = ?', $player->id, 'IV. třída', 'červená karta');
+	    $starting = $this->model->getPlayersMatches()->where('player_id = ? AND match.season_id = ?', $player->id, $this->season)->count();
+	    $subs = $this->model->getSubstitutions()->where('player_in_id = ? AND match.season_id = ?', $player->id, $this->season)->count();
+	    $subs_out_count = $this->model->getSubstitutions()->where('player_out_id = ? AND match.season_id = ?', $player->id, $this->season)->count();
+	    $goals = $this->model->getEvents()->where('player_id = ? AND match.competition.name = ? AND event_type.name = ? AND match.season_id = ?', $player->id, 'IV. třída', 'gól', $this->season)->count();
+	    $goals_pen = $this->model->getEvents()->where('player_id = ? AND match.competition.name = ? AND event_type.name = ? AND penalty = ? AND match.season_id = ?', $player->id, 'IV. třída', 'gól', true, $this->season)->count();
+	    $subs_in = $this->model->getSubstitutions()->where('player_in_id = ? AND match.season_id = ?', $player->id, $this->season);
+	    $subs_out = $this->model->getSubstitutions()->where('player_out_id = ? AND match.season_id = ?', $player->id, $this->season);
+	    $yellow_cards = $this->model->getEvents()->where('player_id = ? AND match.competition.name = ? AND event_type.name = ? AND match.season_id = ?', $player->id, 'IV. třída', 'žlutá karta', $this->season)->count();
+	    $red_cards_count = $this->model->getEvents()->where('player_id = ? AND match.competition.name = ? AND event_type.name = ? AND match.season_id = ?', $player->id, 'IV. třída', 'červená karta', $this->season)->count();
+	    $red_cards = $this->model->getEvents()->where('player_id = ? AND match.competition.name = ? AND event_type.name = ? AND match.season_id = ?', $player->id, 'IV. třída', 'červená karta', $this->season);
+	    $assists = $this->model->getEvents()->where('assist = ? AND match.competition.name = ? AND event_type.name = ? AND match.season_id = ?', $player->id, 'IV. třída', 'gól', $this->season)->count();
 	    
 	    $mins = 90 * $starting;
 	    foreach ($subs_in as $sub) {
@@ -60,6 +63,7 @@ class PlayerStatistics extends UI\Control
 		'mins' => $mins,
 		'y_cards' => $yellow_cards,
 		'r_cards' => $red_cards_count,
+		'assists' => $assists,
 	    );
 	    $stats[$player->id] = $values;
 	}

@@ -23,6 +23,8 @@ class MatchPresenter extends BasePresenter {
      */
     private $relatedArticle;
     
+    private $season = NULL;
+    
     public function beforeRender() {
 	parent::beforeRender();
 	$result = $this->model->getSeasons()->select('name')->where('id', $this->currentSeason)->fetch();
@@ -31,9 +33,15 @@ class MatchPresenter extends BasePresenter {
 	$this->template->allowedEditArticle = $this->isUserAllowedToAction('article', 'edit');
     }
     
-    public function renderDefault() {
+    public function renderDefault($season = NULL) {
+	if ($season == NULL) {
+		$selectedSeason = $this->currentSeason;
+	} else {
+		$selectedSeason = $season;
+	}
+	$this->season = $season;
 	// get all Veterov matches (don't know how to implement string value instead index)
-	$matches = $this->model->getMatches()->where('home_id = ? OR away_id =?', 1, 1)->order('date ASC');
+	$matches = $this->model->getMatches()->where('home_id = ? OR away_id =?', 1, 1)->where('season_id', $selectedSeason)->order('date ASC');
 	$results = array();
 	foreach ($matches as $match) {
 	    $status = 'lose';						    // default status lose
@@ -54,6 +62,8 @@ class MatchPresenter extends BasePresenter {
 	}
 	$this->template->results = $results;
 	$this->template->matches = $matches;
+	$result = $this->model->getSeasons()->select('name')->where('id', $selectedSeason)->fetch();
+	$this->template->currentSeason = $result['name'];
     }
     
     public function actionEdit($id)
@@ -116,12 +126,13 @@ class MatchPresenter extends BasePresenter {
     
     public function renderCompetition()
     {
-	$this->template->matches = $this->model->getMatches()->where('competition.name = ?', 'IV. třída')->order('date ASC');
+	    $selectedSeason = $this->currentSeason;
+	    $this->template->matches = $this->model->getMatches()->where('competition.name = ? AND season_id = ?', 'IV. třída', $selectedSeason)->order('date ASC');
     }
     
     public function renderTable()
     {
-	$teams = $this->model->getTeams()->where('competition.name = ?', 'IV. třída');
+	$teams = $this->model->getTeams()->where('id', $this->model->getTeamsCompetitions()->select('team_id')->where('season_id = ? AND competition.name = ?', $this->currentSeason, 'IV. třída'));
 	$this->template->table = $this->getCompetitionTable($teams);
     }
     
@@ -221,8 +232,10 @@ class MatchPresenter extends BasePresenter {
 		->addRule(Form::FILLED, 'Je nutné zadat typ.');
 	$form->addText('minute', 'Minuta:')
 		->setType('number');
-	$form->addSelect('player_id', 'Hráč:', $this->fetchPairsPlayers())
+	$form->addSelect('player_id', 'Hráč:', $this->fetchPairsPlayers('Věteřov', NULL))
 		->addRule(Form::FILLED, 'Je nutné vybrat hráče.');
+	$form->addSelect('assist', 'Asistence:', $this->fetchPairsPlayers('Věteřov', NULL))
+		->setPrompt('- žádná -');
 	$form->addCheckbox('penalty', 'Penalta');
 	$form->addSubmit('save', 'Uložit');
 	$form->onSuccess[] = callback($this, 'eventAddFormSubmitted');
@@ -238,6 +251,7 @@ class MatchPresenter extends BasePresenter {
 	);
 	if ($form->values->minute != '') $data['minute'] = $form->values->minute;
 	if ($form->values->penalty != '') $data['penalty'] = $form->values->penalty;
+	if ($form->values->assist != '') $data['assist'] = $form->values->assist;
 	$this->model->getEvents()->insert($data);
 	$this->flashMessage('Událost přidána.', 'success');
 	$this->redirect('Match:edit', $form->values->match_id);
@@ -273,19 +287,7 @@ class MatchPresenter extends BasePresenter {
 	$this->redirect('Match:edit', $form->values->match_id);
     }
     
-    /**
-     * Returns array of pairs 'id' => 'player_surname player_name' 
-     * @return array 
-     */
-    private function fetchPairsPlayers()
-    {
-	$array = array();
-	$players = $this->model->getPlayers()->where('team.name = ?', 'Věteřov')->order('surname ASC');
-	foreach ($players as $player) {
-	    $array[$player->id] = $player->surname . ' ' . $player->name;
-	}
-	return $array;
-    }
+    
     
     /**
      * Creates component PlayerList of Veterov players
@@ -294,7 +296,7 @@ class MatchPresenter extends BasePresenter {
     protected function createComponentStartingEleven()
     {
 	$db = $this->context->database;
-	$players = $this->model->getPlayers()->where('team.name', 'Věteřov')->order('surname ASC', 'name ASC');
+	$players = $this->getPlayersByFilter('Věteřov', NULL);
 	return new StartingEleven($players, $this->id, $this->model, $db);
     }
     
@@ -314,6 +316,23 @@ class MatchPresenter extends BasePresenter {
     protected function createComponentComments()
     {
 	return new Comments($this->model, $this->relatedArticle);
+    }
+    
+    
+    
+    /**
+     * Season select form
+     * @return SeasonForm 
+     */
+    protected function createComponentSeasonForm()
+    {
+	    $form = new SeasonForm($this->model);
+	    if ($this->season == NULL) {
+		    $form['seasonId']->setDefaultValue($this->currentSeason);
+	    } else {
+		    $form['seasonId']->setDefaultValue($this->season);
+	    }
+	    return $form;
     }
 
 }

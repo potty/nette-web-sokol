@@ -23,7 +23,7 @@
 		<tr><td class="title">Datum narození:</td><td>{$player->birth|date:'d.m.Y'}</td></tr>
 		<tr><td class="title">Věk:</td><td>{$player->birth|age}</td></tr>
 		<tr><td class="title">Pozice:</td><td>{$player->position->name}</td></tr>
-		<tr><td class="title">Klub:</td><td>{$player->team->name}</td></tr>
+		<tr><td class="title">Klub:</td><td>{ifset $team->name}{$team->name}{/ifset}</td></tr>
 	    </table>
 	</div>
     </div>

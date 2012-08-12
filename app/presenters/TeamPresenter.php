@@ -1,5 +1,7 @@
 <?php
 
+use Nette\Application\UI\Form;
+
 /**
  * Description of TeamPresenter
  *
@@ -57,5 +59,54 @@ class TeamPresenter extends BasePresenter {
 	$this->template->results = $results;
 	$this->template->matches = $matches;
     }
+    
+    
+    
+	/**
+	 * Team registration to competition
+	 * @return Form 
+	 */
+	protected function createComponentRegisterTeam()
+	{
+		$form = new Form();
+	    
+		$form->addSelect('teamId', 'Tým: ', $this->model->getTeams()->order('name ASC')->fetchPairs('id', 'name'))
+			->setRequired();
+	    
+		$form->addSelect('competitionId', 'Soutěž: ', $this->model->getCompetitions()->order('id ASC')->fetchPairs('id', 'name'))
+			->setRequired();
+	    
+		$form->addSelect('seasonId', 'Sezona: ', $this->model->getSeasons()->order('start_date DESC')->fetchPairs('id', 'name'))
+			->setRequired();
+	    
+		$form->addSubmit('save', 'Uložit');
+	    
+		$form->onSuccess[] = callback($this, 'registerTeamSubmitted');
+	    
+		return $form;
+	}
+	
+	
+	
+	/**
+	 * Register team process
+	 * @param Form $form 
+	 */
+	public function registerTeamSubmitted(Form $form)
+	{
+		$values = $form->values;
+		
+		$data = array (
+		    'team_id' => $values->teamId,
+		    'competition_id' => $values->competitionId,
+		    'season_id' => $values->seasonId,
+		);
+		
+		$this->model->getTeamsCompetitions()->insert($data);
+		$this->flashMessage('Tým zaregistrován.', 'success');
+		$this->redirect('Admin:teamRegister');
+	}
+	
+	
 
 }

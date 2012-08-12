@@ -29,10 +29,12 @@
 	<td>{$team['goal_diff']}</td>
 	<td class="bold">{$team['points']}</td>
 	<td>
+	{ifset $team['form']}
 	    {foreach $team['form'] as $form}
 		{var $tooltip = $form['match']->ref('team', 'home_id')->name . ' ' . $form['match']->score_home . ':' . $form['match']->score_away . ' ' . $form['match']->ref('team', 'away_id')->name}
 		<a href="{link Match:single $form['match']->id}" class="form form-{$form['status']}" title="{$form['match']->date|date:'j.n.Y'} - {$tooltip}">{$form['status']}</a>
 	    {/foreach}
+	{/ifset}
 	</td>
     </tr>
 {/foreach}

@@ -59,6 +59,8 @@ final class ObjectMixin
 				foreach ($list as $handler) {
 					callback($handler)->invokeArgs($args);
 				}
+			} elseif ($list !== NULL) {
+				throw new UnexpectedValueException("Property $class->name::$$name must be array or NULL, " . gettype($list) ." given.");
 			}
 			return NULL;
 		}
@@ -140,6 +142,14 @@ final class ObjectMixin
 			// and is much faster than reflection
 			// (works good since 5.0.4)
 			self::$methods[$class] = array_flip(get_class_methods($class));
+		}
+
+		// public method as closure getter
+		if (isset(self::$methods[$class][$name])) {
+			$val = function() use ($_this, $name) {
+				return call_user_func_array(array($_this, $name), func_get_args());
+			};
+			return $val;
 		}
 
 		// property getter support

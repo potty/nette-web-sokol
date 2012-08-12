@@ -162,6 +162,18 @@ class Html extends Nette\Object implements \ArrayAccess, \Countable, \IteratorAg
 
 
 	/**
+	 * Overloaded tester for element's attribute.
+	 * @param  string    HTML attribute name
+	 * @return void
+	 */
+	final public function __isset($name)
+	{
+		return isset($this->attrs[$name]);
+	}
+
+
+
+	/**
 	 * Overloaded unsetter for element's attribute.
 	 * @param  string    HTML attribute name
 	 * @return void
@@ -451,7 +463,7 @@ class Html extends Nette\Object implements \ArrayAccess, \Countable, \IteratorAg
 
 	/**
 	 * Returns all of children.
-	 * return array
+	 * @return array
 	 */
 	final public function getChildren()
 	{

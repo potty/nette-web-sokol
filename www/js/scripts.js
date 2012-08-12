@@ -135,3 +135,14 @@ $(function() {
    $('a.colorbox').colorbox();
    
 });
+
+
+
+/**
+ * Select submit on change 
+ */
+$(function () {
+	$(".onChangeSubmit").change(function () {
+		$(this).closest("form").submit();
+        });
+});

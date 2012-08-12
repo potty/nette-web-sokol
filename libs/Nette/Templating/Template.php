@@ -165,7 +165,7 @@ class Template extends Nette\Object implements ITemplate
 
 	/**
 	 * Registers callback as template compile-time filter.
-	 * @param  callback
+	 * @param  callable
 	 * @return Template  provides a fluent interface
 	 */
 	public function registerFilter($callback)
@@ -194,7 +194,7 @@ class Template extends Nette\Object implements ITemplate
 	/**
 	 * Registers callback as template run-time helper.
 	 * @param  string
-	 * @param  callback
+	 * @param  callable
 	 * @return Template  provides a fluent interface
 	 */
 	public function registerHelper($name, $callback)
@@ -207,7 +207,7 @@ class Template extends Nette\Object implements ITemplate
 
 	/**
 	 * Registers callback as template run-time helpers loader.
-	 * @param  callback
+	 * @param  callable
 	 * @return Template  provides a fluent interface
 	 */
 	public function registerHelperLoader($callback)
@@ -443,7 +443,14 @@ class Template extends Nette\Object implements ITemplate
 		$tokens = token_get_all($source);
 		foreach ($tokens as $n => $token) {
 			if (is_array($token)) {
-				if ($token[0] === T_INLINE_HTML || $token[0] === T_CLOSE_TAG) {
+				if ($token[0] === T_INLINE_HTML) {
+					$res .= $token[1];
+					continue;
+
+				} elseif ($token[0] === T_CLOSE_TAG) {
+					if ($php !== $res) { // not <?xml
+						$res .= str_repeat("\n", substr_count($php, "\n"));
+					}
 					$res .= $token[1];
 					continue;
 

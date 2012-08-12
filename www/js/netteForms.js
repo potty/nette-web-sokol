@@ -52,7 +52,7 @@ Nette.getValue = function(elem) {
 		return elem.checked;
 
 	} else if (elem.type === 'radio') {
-		return Nette.getValue(elem.form.elements[elem.name]);
+		return Nette.getValue(elem.form.elements[elem.name].nodeName ? [elem] : elem.form.elements[elem.name]);
 
 	} else {
 		return elem.value.replace(/^\s+|\s+$/g, '');
@@ -169,7 +169,7 @@ Nette.validators = {
 	},
 
 	email: function(elem, arg, val) {
-		return (/^[^@\s]+@[^@\s]+\.[a-z]{2,10}$/i).test(val);
+		return (/^[^@\s]+@[^@\s]+\.[a-z\u00C0-\u02FF\u0370-\u1EFF]{2,10}$/i).test(val);
 	},
 
 	url: function(elem, arg, val) {
@@ -263,7 +263,7 @@ Nette.toggle = function(id, visible) {
 
 
 Nette.initForm = function(form) {
-	form.noValidate = true;
+	form.noValidate = 'novalidate';
 
 	Nette.addEvent(form, 'submit', function() {
 		return Nette.validateForm(form);

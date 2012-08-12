@@ -148,7 +148,7 @@ class Strings
 		// right trim
 		$s = preg_replace("#[\t ]+$#m", '', $s);
 
-		// trailing spaces
+		// leading and trailing blank lines
 		$s = trim($s, "\n");
 
 		return $s;
@@ -163,7 +163,7 @@ class Strings
 	 */
 	public static function toAscii($s)
 	{
-		$s = preg_replace('#[^\x09\x0A\x0D\x20-\x7E\xA0-\x{10FFFF}]#u', '', $s);
+		$s = preg_replace('#[^\x09\x0A\x0D\x20-\x7E\xA0-\x{2FF}\x{370}-\x{10FFFF}]#u', '', $s);
 		$s = strtr($s, '`\'"^~', "\x01\x02\x03\x04\x05");
 		if (ICONV_IMPL === 'glibc') {
 			$s = @iconv('UTF-8', 'WINDOWS-1250//TRANSLIT', $s); // intentionally @
@@ -483,7 +483,7 @@ class Strings
 	 * Perform a regular expression search and replace.
 	 * @param  string
 	 * @param  string|array
-	 * @param  string|callback
+	 * @param  string|callable
 	 * @param  int
 	 * @return string
 	 */
@@ -497,10 +497,12 @@ class Strings
 				throw new Nette\InvalidStateException("Callback '$textual' is not callable.");
 			}
 
-			Debugger::tryError();
-			preg_match($pattern, '');
-			if (Debugger::catchError($e)) { // compile error
-				throw new RegexpException($e->getMessage(), NULL, $pattern);
+			foreach ((array) $pattern as $tmp) {
+				Debugger::tryError();
+				preg_match($tmp, '');
+				if (Debugger::catchError($e)) { // compile error
+					throw new RegexpException($e->getMessage(), NULL, $tmp);
+				}
 			}
 
 			$res = preg_replace_callback($pattern, $replacement, $subject, $limit);
@@ -509,7 +511,7 @@ class Strings
 			}
 			return $res;
 
-		} elseif (is_array($pattern)) {
+		} elseif ($replacement === NULL && is_array($pattern)) {
 			$replacement = array_values($pattern);
 			$pattern = array_keys($pattern);
 		}

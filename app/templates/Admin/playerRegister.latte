@@ -1,0 +1,24 @@
+{var $title = 'Registrovaní hráči'}
+
+{block content}
+
+<h1>{$title}</h1>
+
++ <a href="{link Player:register}">Registrovat hráče</a>
+
+<table class="format">
+    <tr>
+	    <th>Sezona</th>
+	    <th>Hráč</th>
+	    <th>Tým</th>
+    </tr>
+    {foreach $registrations as $reg}
+    <tr>
+	    <td>{$reg->season->name}</td>
+	    <td>{$reg->player->name} {$reg->player->surname}</td>
+	    <td>{$reg->team->name}</td>
+    </tr>
+    {/foreach}
+</table>
+
+{/block}

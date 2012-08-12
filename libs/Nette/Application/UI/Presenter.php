@@ -33,7 +33,7 @@ use Nette,
  * @property-read bool $ajax
  * @property-read Nette\Application\Request $lastCreatedRequest
  * @property-read Nette\Http\SessionSection $flashSession
- * @property-read \SystemContainer|Nette\DI\IContainer $context
+ * @property-read \SystemContainer|Nette\DI\Container $context
  * @property-read Nette\Application\Application $application
  * @property-read Nette\Http\Session $session
  * @property-read Nette\Security\User $user
@@ -108,13 +108,17 @@ abstract class Presenter extends Control implements Application\IPresenter
 	/** @var array */
 	private $lastCreatedRequestFlag;
 
-	/** @var Nette\DI\IContainer */
+	/** @var \SystemContainer|Nette\DI\Container */
 	private $context;
 
 
 
-	public function __construct()
+	public function __construct(Nette\DI\Container $context)
 	{
+		$this->context = $context;
+		if ($this->invalidLinkMode === NULL) {
+			$this->invalidLinkMode = $context->parameters['productionMode'] ? self::INVALID_LINK_SILENT : self::INVALID_LINK_WARNING;
+		}
 	}
 
 
@@ -504,7 +508,8 @@ abstract class Presenter extends Control implements Application\IPresenter
 		$name = $this->getName();
 		$presenter = substr($name, strrpos(':' . $name, ':'));
 		$layout = $this->layout ? $this->layout : 'layout';
-		$dir = dirname(dirname($this->getReflection()->getFileName()));
+		$dir = dirname($this->getReflection()->getFileName());
+		$dir = is_dir("$dir/templates") ? $dir : dirname($dir);
 		$list = array(
 			"$dir/templates/$presenter/@$layout.latte",
 			"$dir/templates/$presenter.@$layout.latte",
@@ -529,7 +534,8 @@ abstract class Presenter extends Control implements Application\IPresenter
 	{
 		$name = $this->getName();
 		$presenter = substr($name, strrpos(':' . $name, ':'));
-		$dir = dirname(dirname($this->getReflection()->getFileName()));
+		$dir = dirname($this->getReflection()->getFileName());
+		$dir = is_dir("$dir/templates") ? $dir : dirname($dir);
 		return array(
 			"$dir/templates/$presenter/$this->view.latte",
 			"$dir/templates/$presenter.$this->view.latte",
@@ -959,7 +965,13 @@ abstract class Presenter extends Control implements Application\IPresenter
 
 			$globalState = $this->getGlobalState($destination === 'this' ? NULL : $presenterClass);
 			if ($current && $args) {
-				$current = http_build_query($globalState + $this->params) === http_build_query($args);
+				$tmp = $globalState + $this->params;
+				foreach ($args as $key => $val) {
+					if (http_build_query(array($val)) !== (isset($tmp[$key]) ? http_build_query(array($tmp[$key])) : '')) {
+						$current = FALSE;
+						break;
+					}
+				}
 			}
 			$args += $globalState;
 		}
@@ -1038,33 +1050,17 @@ abstract class Presenter extends Control implements Application\IPresenter
 				continue;
 			}
 
-
-			$def = $param->isDefaultValueAvailable() ? $param->getDefaultValue() : NULL;
-			$val = $args[$name];
-			if ($val === NULL) {
+			if ($args[$name] === NULL) {
 				continue;
-			} elseif ($param->isArray() || is_array($def)) {
-				if (!is_array($val)) {
-					throw new InvalidLinkException("Invalid value for parameter '$name', expected array.");
-				}
-			} elseif ($param->getClass() || is_object($val)) {
-				// ignore
-			} elseif (!is_scalar($val)) {
-				throw new InvalidLinkException("Invalid value for parameter '$name', expected scalar.");
-
-			} elseif ($def === NULL) {
-				if ((string) $val === '') {
-					$args[$name] = NULL; // value transmit is unnecessary
-				}
-				continue;
-			} else {
-				settype($args[$name], gettype($def));
-				if ((string) $args[$name] !== (string) $val) {
-					throw new InvalidLinkException("Invalid value for parameter '$name', expected ".gettype($def).".");
-				}
 			}
 
-			if ($args[$name] === $def) {
+			$def = $param->isDefaultValueAvailable() ? $param->getDefaultValue() : NULL;
+			$type = $param->isArray() ? 'array' : gettype($def);
+			if (!PresenterComponentReflection::convertType($args[$name], $type)) {
+				throw new InvalidLinkException("Invalid value for parameter '$name' in method $class::$method(), expected " . ($type === 'NULL' ? 'scalar' : $type) . ".");
+			}
+
+			if ($args[$name] === $def || ($def === NULL && is_scalar($args[$name]) && (string) $args[$name] === '')) {
 				$args[$name] = NULL; // value transmit is unnecessary
 			}
 		}
@@ -1180,8 +1176,8 @@ abstract class Presenter extends Control implements Application\IPresenter
 
 			if ($sinces === NULL) {
 				$sinces = array();
-				foreach ($this->getReflection()->getPersistentParams() as $nm => $meta) {
-					$sinces[$nm] = $meta['since'];
+				foreach ($this->getReflection()->getPersistentParams() as $name => $meta) {
+					$sinces[$name] = $meta['since'];
 				}
 			}
 
@@ -1354,19 +1350,9 @@ abstract class Presenter extends Control implements Application\IPresenter
 
 
 
-	final public function setContext(Nette\DI\IContainer $context)
-	{
-		$this->context = $context;
-		if ($this->invalidLinkMode === NULL) {
-			$this->invalidLinkMode = empty($context->parameters['productionMode']) ? self::INVALID_LINK_WARNING : self::INVALID_LINK_SILENT;
-		}
-	}
-
-
-
 	/**
 	 * Gets the context.
-	 * @return \SystemContainer|Nette\DI\IContainer
+	 * @return \SystemContainer|Nette\DI\Container
 	 */
 	final public function getContext()
 	{

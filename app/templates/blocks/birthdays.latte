@@ -1,0 +1,14 @@
+<div class="block">
+
+    <div class="title">Narozeniny</div>
+    
+    <table class="block-table">
+    {foreach $birthdays as $bday}
+	<tr>
+	    <td><a href="{link Player:single $bday->id}">{$bday->name} {$bday->surname}</a></td>
+	    <td>{$bday->birth|date:'d.m.'} ({$bday->age} let)</td>
+	</tr>
+    {/foreach}
+    </table>
+    
+</div>

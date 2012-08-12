@@ -629,3 +629,30 @@ div.flash {
 .tab a.active { font-weight: bold; }
 .tab-container .panel-container { background: #fff; border: solid @border 1px; padding: 10px; -moz-border-radius: 0 4px 4px 4px; -webkit-border-radius: 0 4px 4px 4px; }
 .panel-container { margin-bottom: 10px; }
+
+/**
+ Paginator
+*/
+.paginator {
+	text-align: center;
+	A {
+		border: 1px solid lighten(#000, 50%);
+		color: lighten(#000, 30%);
+		&:hover {
+			color: #000;
+		}
+	}
+	
+	.current {
+		background: @link2;
+		border: 1px solid @link2;
+	}
+}
+
+/**
+ Select season form
+*/
+.season-select {
+	text-align: right;
+	float: right;
+}

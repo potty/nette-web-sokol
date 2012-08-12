@@ -2,7 +2,13 @@
 
 {block content}
 
-<h1>{$title}</h1>
+<div class="season-select">
+{form seasonForm}
+	{input seasonId}
+{/form}
+</div>
+
+<h1>{$title} {$season}</h1>
 
 {control playerStatistics}
 

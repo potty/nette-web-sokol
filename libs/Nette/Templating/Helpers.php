@@ -56,7 +56,7 @@ final class Helpers
 	/**
 	 * Try to load the requested helper.
 	 * @param  string  helper name
-	 * @return callback
+	 * @return callable
 	 */
 	public static function loader($helper)
 	{
@@ -272,7 +272,7 @@ final class Helpers
 	public static function dataStream($data, $type = NULL)
 	{
 		if ($type === NULL) {
-			$type = Nette\Utils\MimeTypeDetector::fromString($data, NULL);
+			$type = Nette\Utils\MimeTypeDetector::fromString($data);
 		}
 		return 'data:' . ($type ? "$type;" : '') . 'base64,' . base64_encode($data);
 	}

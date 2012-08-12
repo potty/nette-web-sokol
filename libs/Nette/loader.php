@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Nette Framework (version 2.1-dev released on 2012-02-29, http://nette.org)
+ * Nette Framework (version 2.0.4 released on 2012-07-30, http://nette.org)
  *
  * Copyright (c) 2004, 2012 David Grudl (http://davidgrudl.com)
  *
@@ -29,7 +29,7 @@ umask(0);
  */
 define('NETTE', TRUE);
 define('NETTE_DIR', __DIR__);
-define('NETTE_VERSION_ID', 20100); // v2.1.0
+define('NETTE_VERSION_ID', 20004); // v2.0.4
 define('NETTE_PACKAGE', '5.3');
 
 
@@ -54,11 +54,14 @@ Nette\Utils\SafeStream::register();
 
 /**
  * Nette\Callback factory.
- * @param  mixed   class, object, function, callback
+ * @param  mixed   class, object, callable
  * @param  string  method
  * @return Nette\Callback
  */
 function callback($callback, $m = NULL)
 {
-	return ($m === NULL && $callback instanceof Nette\Callback) ? $callback : new Nette\Callback($callback, $m);
+	if ($m === NULL) {
+		return $callback instanceof Nette\Callback ? $callback : new Nette\Callback($callback);
+	}
+	return new Nette\Callback(array($callback, $m));
 }

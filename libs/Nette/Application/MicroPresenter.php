@@ -27,7 +27,7 @@ use Nette,
  */
 class MicroPresenter extends Nette\Object implements Application\IPresenter
 {
-	/** @var Nette\DI\IContainer */
+	/** @var Nette\DI\Container */
 	private $context;
 
 	/** @var Nette\Application\Request */
@@ -35,7 +35,7 @@ class MicroPresenter extends Nette\Object implements Application\IPresenter
 
 
 
-	public function __construct(Nette\DI\IContainer $context)
+	public function __construct(Nette\DI\Container $context)
 	{
 		$this->context = $context;
 	}
@@ -44,7 +44,7 @@ class MicroPresenter extends Nette\Object implements Application\IPresenter
 
 	/**
 	 * Gets the context.
-	 * @return \SystemContainer|Nette\DI\IContainer
+	 * @return \SystemContainer|Nette\DI\Container
 	 */
 	final public function getContext()
 	{
@@ -75,8 +75,8 @@ class MicroPresenter extends Nette\Object implements Application\IPresenter
 			return;
 		}
 		$params['presenter'] = $this;
-		$method = callback($params['callback'])->toReflection();
-		$response = $method->invokeArgs(Application\UI\PresenterComponentReflection::combineArgs($method, $params));
+		$callback = callback($params['callback']);
+		$response = $callback->invokeArgs(Application\UI\PresenterComponentReflection::combineArgs($callback->toReflection(), $params));
 
 		if (is_string($response)) {
 			$response = array($response, array());
@@ -102,7 +102,7 @@ class MicroPresenter extends Nette\Object implements Application\IPresenter
 	/**
 	 * Template factory.
 	 * @param  string
-	 * @param  callback
+	 * @param  callable
 	 * @return Nette\Templating\ITemplate
 	 */
 	public function createTemplate($class = NULL, $latteFactory = NULL)

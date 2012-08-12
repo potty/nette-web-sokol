@@ -236,7 +236,7 @@ class Cache extends Nette\Object implements \ArrayAccess
 		$key = func_get_args();
 		return $this->load($key, function() use ($function, $key) {
 			array_shift($key);
-			return call_user_func_array($function, $key);
+			return callback($function)->invokeArgs($key);
 		});
 	}
 
@@ -245,16 +245,17 @@ class Cache extends Nette\Object implements \ArrayAccess
 	/**
 	 * Caches results of function/method calls.
 	 * @param  mixed
+	 * @param  array  dependencies
 	 * @return Closure
 	 */
-	public function wrap($function)
+	public function wrap($function, array $dp = NULL)
 	{
 		$cache = $this;
-		return function() use ($cache, $function) {
+		return function() use ($cache, $function, $dp) {
 			$key = array($function, func_get_args());
 			$data = $cache->load($key);
 			if ($data === NULL) {
-				$data = $cache->save($key, call_user_func_array($function, $key[1]));
+				$data = $cache->save($key, callback($function)->invokeArgs($key[1]), $dp);
 			}
 			return $data;
 		};

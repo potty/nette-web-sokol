@@ -44,7 +44,7 @@ use Nette,
 abstract class BaseControl extends Nette\ComponentModel\Component implements IControl
 {
 	/** @var string */
-	public static $idMask = 'frm-%s';
+	public static $idMask = 'frm%s-%s';
 
 	/** @var string textual caption or label */
 	public $caption;
@@ -167,9 +167,7 @@ abstract class BaseControl extends Nette\ComponentModel\Component implements ICo
 			return NULL;
 
 		} elseif ($this->htmlId === NULL) {
-			$this->htmlId = sprintf(self::$idMask, $this->lookup('Nette\Application\IPresenter', FALSE)
-				? $this->lookupPath('Nette\Application\IPresenter')
-				: $this->lookupPath('Nette\Forms\Form'));
+			$this->htmlId = sprintf(self::$idMask, $this->getForm()->getName(), $this->lookupPath('Nette\Forms\Form'));
 		}
 		return $this->htmlId;
 	}
@@ -392,8 +390,8 @@ abstract class BaseControl extends Nette\ComponentModel\Component implements ICo
 
 		$rules = self::exportRules($this->rules);
 		$rules = substr(json_encode($rules), 1, -1);
-		$rules = preg_replace('#"([a-z0-9]+)":#i', '$1:', $rules);
-		$rules = preg_replace('#(?<!\\\\)"([^\\\\\',]*)"#i', "'$1'", $rules);
+		$rules = preg_replace('#"([a-z0-9_]+)":#i', '$1:', $rules);
+		$rules = preg_replace('#(?<!\\\\)"(?!:[^a-z])([^\\\\\',]*)"#i', "'$1'", $rules);
 		$control->data('nette-rules', $rules ? $rules : NULL);
 
 		return $control;

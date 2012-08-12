@@ -247,7 +247,9 @@ class PhpWriter extends Nette\Object
 			}
 
 			if ($token['value'] === '[') { // simplified array syntax [...]
-				if ($arrays[] = $prev['value'] !== ']' && $prev['type'] !== MacroTokenizer::T_SYMBOL && $prev['type'] !== MacroTokenizer::T_VARIABLE && $prev['type'] !== MacroTokenizer::T_KEYWORD) {
+				if ($arrays[] = $prev['value'] !== ']' && $prev['value'] !== ')' && $prev['type'] !== MacroTokenizer::T_SYMBOL
+					&& $prev['type'] !== MacroTokenizer::T_VARIABLE && $prev['type'] !== MacroTokenizer::T_KEYWORD
+				) {
 					$tokens[] = MacroTokenizer::createToken('array') + array('depth' => $depth);
 					$token = MacroTokenizer::createToken('(');
 				}
@@ -287,15 +289,13 @@ class PhpWriter extends Nette\Object
 			switch ($context[0]) {
 			case Compiler::CONTEXT_SINGLE_QUOTED:
 			case Compiler::CONTEXT_DOUBLE_QUOTED:
-			case Compiler::CONTEXT_UNQUOTED:
 				if ($context[1] === Compiler::CONTENT_JS) {
 					$s = "Nette\\Templating\\Helpers::escapeJs($s)";
 				} elseif ($context[1] === Compiler::CONTENT_CSS) {
 					$s = "Nette\\Templating\\Helpers::escapeCss($s)";
 				}
-				$quote = $context[0] === Compiler::CONTEXT_SINGLE_QUOTED ? ', ENT_QUOTES' : '';
-				$s = "htmlSpecialChars($s$quote)";
-				return $context[0] === Compiler::CONTEXT_UNQUOTED ? "'\"' . $s . '\"'" : $s;
+				$quote = $context[0] === Compiler::CONTEXT_DOUBLE_QUOTED ? '' : ', ENT_QUOTES';
+				return "htmlSpecialChars($s$quote)";
 			case Compiler::CONTEXT_COMMENT:
 				return "Nette\\Templating\\Helpers::escapeHtmlComment($s)";
 			case Compiler::CONTENT_JS:
