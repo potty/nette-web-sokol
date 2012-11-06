@@ -244,7 +244,7 @@
 				case 'datetime-local':
 					$.extend(pickerSettings, {
 						stepHour: 1,
-						stepMinute: 1,
+						stepMinute: 15,
 						showButtonPanel: true,
 						onSelect: function(dateText, inst) {
 							if (!selectedDate) {

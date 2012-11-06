@@ -4,7 +4,13 @@
 
 <h1>{$title}</h1>
 
-<h2>Zápasy {$currentSeason}</h2>
+<div class="season-select">
+{form seasonForm}
+	{input seasonId}
+{/form}
+</div>
+
+<h2>Zápasy {$season}</h2>
 
 <table class="format">
     <tr>

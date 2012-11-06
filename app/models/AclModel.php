@@ -22,6 +22,7 @@ class AclModel
 	$this->acl->addResource('team');
 	$this->acl->addResource('image');
 	$this->acl->addResource('admin');
+	$this->acl->addResource('error');
 	
 	$this->acl->allow('guest', 
 	    array(

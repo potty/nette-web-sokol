@@ -63,6 +63,7 @@ class PlayerPresenter extends BasePresenter {
 	
 	$minutes = array();
 	$goals = array();
+	$assists = array();
 	$yellow_cards = array();
 	$red_cards = array();
 	foreach ($matches as $match) {
@@ -85,11 +86,13 @@ class PlayerPresenter extends BasePresenter {
 		    $mins -= (90 - $red['minute']);
 		$minutes[$match->id] = $mins;
 		$goals[$match->id] = $this->model->getEvents()->where('match_id = ? AND player_id = ? AND event_type.name = ?', $match->id, $this->player->id, 'gól')->count();
+		$assists[$match->id] = $this->model->getEvents()->where('match_id = ? AND assist = ? AND event_type.name = ?', $match->id, $this->player->id, 'gól')->count();
 		$yellow_cards[$match->id] = $this->model->getEvents()->where('match_id = ? AND player_id = ? AND event_type.name = ?', $match->id, $this->player->id, 'žlutá karta')->count();
 		$red_cards[$match->id] = $this->model->getEvents()->where('match_id = ? AND player_id = ? AND event_type.name = ?', $match->id, $this->player->id, 'červená karta')->count();
 	    } else {
 		$minutes[$match->id] = '-';
 		$goals[$match->id] = '-';
+		$assists[$match->id] = '-';
 		$yellow_cards[$match->id] = '-';
 		$red_cards[$match->id] = '-';
 	    }
@@ -118,6 +121,7 @@ class PlayerPresenter extends BasePresenter {
 	$this->template->red_cards = $red_cards;
 	$this->template->minutes = $minutes;
 	$this->template->goals = $goals;
+	$this->template->assists = $assists;
 	$this->template->matches = $matches;
 	$this->template->currentSeason = $this->seasonName;
 	$this->template->trainings = $trainings;

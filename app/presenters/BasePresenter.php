@@ -169,7 +169,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
 	foreach ($teams as $team) {
 	    $form = array();
 	    $points = $played = $wins = $draws = $loses = $goals_for = $goals_against = $goal_diff = 0;
-	    $matches = $this->model->getMatches()->where('season_id =? AND played = ? AND (home_id = ? OR away_id = ?)', $this->currentSeason, 1, $team->id, $team->id)->order('date DESC');
+	    $matches = $this->model->getMatches()->where('season_id =? AND played = ? AND (home_id = ? OR away_id = ?) AND competition.name = ?', $this->currentSeason, TRUE, $team->id, $team->id, 'IV. třída')->order('date DESC');
 	    foreach ($matches as $match) {
 		$played++;
 		$status = 'P';
