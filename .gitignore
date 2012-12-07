@@ -9,4 +9,4 @@ temp/*
 !web.config
 app/config/config.local.neon
 
-www/images/thumbs
+www/images/thumbs/*
