@@ -73,6 +73,25 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
     
     
     
+	/*
+	 * Custom latte macros
+	 */
+	public function templatePrepareFilters($tpl)
+	{
+		$tpl->registerFilter($latte = new Nette\Latte\Engine);
+		$set = Nette\Latte\Macros\MacroSet::install($latte->compiler);
+		//confirm action
+		$set->addMacro('confirm',
+			NULL,
+			NULL,
+			function(Nette\Latte\MacroNode $node, Nette\Latte\PhpWriter $writer) {
+				return 'echo \' data-confirm="'. $node->args .'"\'';
+			}
+		);
+	}
+    
+    
+    
     public function beforeRender()
     {
 	parent::beforeRender();
@@ -80,6 +99,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
 	$this->template->robots = 'index, follow';
 	
 	LayoutHelpers::$thumbDirUri = 'images/thumbs';
+	LayoutHelpers::setContext($this->context);
 	$this->template->registerHelper('thumb', 'LayoutHelpers::thumb');
 	
 	$this->template->lastMatch = $this->model->getMatches()
@@ -110,6 +130,8 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
 	$this->template->table = $this->getCompetitionTable($teams, TRUE);
 	$access = array (
 	    'training' => $this->isUserAllowedToAction('training', 'default'),
+	    'contact' => $this->isUserAllowedToAction('contact', 'default'),
+	    'contactEdit' => $this->isUserAllowedToAction('contact', 'edit'),
 	);
 	$this->template->accessAllowed = $access;
 	if ($this->isAjax()) {

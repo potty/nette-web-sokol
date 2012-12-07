@@ -5,13 +5,13 @@ Options -Indexes
 
 # enable cool URL
 <IfModule mod_rewrite.c>
-	RewriteEngine On
-	# RewriteBase /
-
-	# front controller
-	RewriteCond %{REQUEST_FILENAME} !-f
-	RewriteCond %{REQUEST_FILENAME} !-d
-	RewriteRule !\.(pdf|js|ico|gif|jpg|png|css|rar|zip|tar\.gz)$ index.php [L]
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule !\.(pdf|js|ico|gif|jpg|png|css|rar|zip|tar\.gz)$ index.php [L]
+  <IfModule mod_env.c>
+    SetEnv NETTE_HTACCESS ok
+  </IfModule>
 </IfModule>
 
 # enable gzip compression
@@ -22,7 +22,7 @@ Options -Indexes
 # allow combined JavaScript & CSS. Inside of script.combined.js you could use <!--#include file="script.js" -->
 <IfModule mod_include.c>
 	<FilesMatch "\.combined\.(js|css)$">
-		Options +Includes
+		#Options +Includes
 		SetOutputFilter INCLUDES
 	</FilesMatch>
 </IfModule>

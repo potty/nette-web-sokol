@@ -142,6 +142,11 @@ class Model extends Nette\Object
 	    return $this->database->table('team_competition');
     }
     
+    public function getContacts()
+    {
+	    return $this->database->table('contact');
+    }
+    
     /**
      * Checks if login is already used
      * @param Nette\Forms\IControl $control

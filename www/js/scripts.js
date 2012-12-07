@@ -138,6 +138,28 @@ $(function() {
 
 
 
+/*
+ * Confirm dialog
+ */
+$.fn.extend({
+	triggerAndReturn: function (name, data) {
+		var event = new $.Event(name);
+		this.trigger(event, data);
+		return event.result !== false;
+	}
+});
+
+$('a[data-confirm], button[data-confirm], input[data-confirm]').live('click', function (e) {
+	var el = $(this);
+	if (el.triggerAndReturn('confirm')) {
+		if (!confirm(el.attr('data-confirm'))) {
+			return false;
+		}
+	}
+});
+
+
+
 /**
  * Select submit on change 
  */

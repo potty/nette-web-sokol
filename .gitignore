@@ -1,5 +1,12 @@
-/nbproject/private/
-/temp/
-/tests/
-/log/
-/app/config/config.neon
+/nbproject/
+
+log/*
+temp/*
+
+.DS_Store
+!.gitignore
+!.htaccess
+!web.config
+app/config/config.local.neon
+
+www/images/thumbs

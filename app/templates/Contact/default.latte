@@ -1,0 +1,25 @@
+{$title = 'Kontakty'}
+
+{block content}
+
+<h1>{$title}</h1>
+
+<a n:if="$accessAllowed['contactEdit']" href="{link Contact:add}">+ Přidat kontakt</a>
+
+<table class="format">
+	<tr>
+		<th>Jméno</th>
+		<th>Telefon</th>
+		<th n:if="$accessAllowed['contactEdit']">Akce</th>
+	</tr>
+
+{foreach $contacts as $contact}
+	<tr>
+		<td>{$contact->player->surname} {$contact->player->name}</td>
+		<td>{$contact->phone|number:0:',':' '}</td>
+		<td n:if="$accessAllowed['contactEdit']"><a href="{link Contact:edit $contact->id}">upravit</a> <a n:href="delete! $contact->id" n:confirm="Are you sure you want to delete?">smazat</a></td>
+	</tr>
+{/foreach}
+</table>
+
+{/block}

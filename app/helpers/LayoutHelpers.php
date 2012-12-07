@@ -11,6 +11,7 @@ abstract class LayoutHelpers extends Nette\Object
         /** @var string relativni URI k adresari s miniaturami (zacina se v document_rootu) */
         public static $thumbDirUri = NULL;
 
+        private static $context;
 
 
         /**
@@ -23,8 +24,11 @@ abstract class LayoutHelpers extends Nette\Object
          */
         public static function thumb($origName, $width, $height = NULL)
         {
-                $thumbDirPath = WWW_DIR . '/' . trim(self::$thumbDirUri, '/\\');
-                    $origPath = WWW_DIR . '/' . $origName;
+
+                $wwwDir = self::$context->parameters['wwwDir'];
+
+                $thumbDirPath = $wwwDir . '/' . trim(self::$thumbDirUri, '/\\');
+                    $origPath = $wwwDir . '/' . $origName;
 
                 if (($width === NULL && $height === NULL) || !is_file($origPath) || !is_dir($thumbDirPath) || !is_writable($thumbDirPath))
                         return $origName;
@@ -102,5 +106,11 @@ abstract class LayoutHelpers extends Nette\Object
                 $relPath = md5($relPath) . $sep . $ext;
 
                 return $relPath;
+        }
+
+
+        public static function setContext($context)
+        {
+		self::$context = $context;
         }
 }

@@ -1,6 +1,7 @@
 <?php
 
-use Nette\Application\UI\Form;
+use Nette\Application\UI\Form,
+	Nette\Mail\Message;
 
 /**
  * Description of PagePresenter
@@ -73,6 +74,21 @@ class PagePresenter extends BasePresenter {
 	    'role_id' => $role->id,
 	);
 	$this->model->getUsers()->insert($data);
+			
+	// Send mail
+	$body = 'Nový uživatel ' . $values->name . ' ' . $values->surname . ' se právě zaregistroval.';
+	
+	$mail = new Message;
+	$mail->setFrom('sokol-veterov.cz <noreply@sokol-veterov.cz>')
+		->addTo('admin@sokol-veterov.cz')
+		->setSubject('Nová registrace')
+		->setBody($body);
+	try {
+		$mail->send();
+	} catch (\Exception $e) {
+		throw $e;
+	}
+	
 	$this->flashMessage('Registrace proběhla úspěšně. Váš účet nyní musí být aktivován adminem.', 'success');
 	$this->redirect('Homepage:');
     }

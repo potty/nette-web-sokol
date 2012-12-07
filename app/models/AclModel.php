@@ -23,6 +23,7 @@ class AclModel
 	$this->acl->addResource('image');
 	$this->acl->addResource('admin');
 	$this->acl->addResource('error');
+	$this->acl->addResource('contact');
 	
 	$this->acl->allow('guest', 
 	    array(
@@ -44,7 +45,7 @@ class AclModel
 	);
 	$this->acl->allow('guest', array('page'), array('register', 'search', 'club'));
 	
-	$this->acl->allow('member', array('sign', 'training'), array('out', 'default', 'single'));
+	$this->acl->allow('member', array('sign', 'training', 'contact'), array('out', 'default', 'single'));
 	
 	$this->acl->allow('admin', Nette\Security\Permission::ALL, Nette\Security\Permission::ALL);
     }

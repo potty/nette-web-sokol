@@ -11,7 +11,8 @@ var Nette = Nette || {};
 
 // simple class builder
 Nette.Class = function(def) {
-	var cl = def.constructor || function(){}, nm, __hasProp = Object.prototype.hasOwnProperty;
+	var hasProp = Object.prototype.hasOwnProperty, nm,
+		cl = hasProp.call(def, 'constructor') ? def.constructor : function(){};
 	delete def.constructor;
 
 	if (def.Extends) {
@@ -22,11 +23,11 @@ Nette.Class = function(def) {
 	}
 
 	if (def.Static) {
-		for (nm in def.Static) { if (__hasProp.call(def.Static, nm)) cl[nm] = def.Static[nm]; }
+		for (nm in def.Static) { if (hasProp.call(def.Static, nm)) cl[nm] = def.Static[nm]; }
 		delete def.Static;
 	}
 
-	for (nm in def) { if (__hasProp.call(def, nm)) cl.prototype[nm] = def[nm]; }
+	for (nm in def) { if (hasProp.call(def, nm)) cl.prototype[nm] = def[nm]; }
 	return cl;
 };
 
@@ -197,7 +198,7 @@ fn({
 	},
 
 	val: function() {
-		var i;
+		var i, len, values;
 		if (!this.nodeName) { // radio
 			for (i = 0, len = this.length; i < len; i++) {
 				if (this[i].checked) { return this[i].value; }
@@ -323,7 +324,6 @@ fn({
 		}).bind('click', function(e) {
 			if (started) {
 				e.stopImmediatePropagation();
-				preventClick = false;
 			}
 		});
 	}

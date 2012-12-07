@@ -15,41 +15,29 @@ class TeamPresenter extends BasePresenter {
      * Current season name (e.g. 2011/2012)
      * @var string 
      */
-    private $seasonName;
-    
-    private $season = NULL;
-    private $selectedSeason;
-    
-    
+    private $season;
     
     public function beforeRender() {
 	parent::beforeRender();
 	$result = $this->model->getSeasons()->select('name')->where('id', $this->currentSeason)->fetch();
-	$this->seasonName = $result['name'];
+	$this->season = $result['name'];
     }
     
-    public function actionSingle($id, $season = NULL)
+    public function actionSingle($id)
     {
 	$this->team = $this->model->getTeams()->find($id)->fetch();
 	if ($this->team === FALSE) {
 	    $this->setView('notFound');
 	}
-	
-	if ($season == NULL) {
-		$this->selectedSeason = $this->currentSeason;
-	} else {
-		$this->selectedSeason = $season;
-	}
-	$this->season = $season;
     }
     
     public function renderSingle()
     {
 	$this->template->team = $this->team;
 	$matches = $this->model->getMatches()
-		->where('(home_id = ? OR away_id = ?) AND season_id = ? AND played = ?', $this->team->id, $this->team->id, $this->selectedSeason, TRUE)
+		->where('(home_id = ? OR away_id = ?) AND season.name = ? AND played = ?', $this->team->id, $this->team->id, $this->season, TRUE)
 		->order('date ASC');
-	$this->template->season = $this->seasonName;
+	$this->template->currentSeason = $this->season;
 	$results = array();
 	foreach ($matches as $match) {
 	    $status = 'lose';						    // default status lose
@@ -117,32 +105,6 @@ class TeamPresenter extends BasePresenter {
 		$this->model->getTeamsCompetitions()->insert($data);
 		$this->flashMessage('Tým zaregistrován.', 'success');
 		$this->redirect('Admin:teamRegister');
-	}
-	
-	
-	
-	/**
-	* Season select form
-	* @return SeasonForm 
-	*/
-	protected function createComponentSeasonForm()
-	{
-		$form = new SeasonForm($this->model);
-		if ($this->season == NULL) {
-			$form['seasonId']->setDefaultValue($this->currentSeason);
-		} else {
-			$form['seasonId']->setDefaultValue($this->season);
-		}
-		$form->onSuccess[] = callback($this, 'seasonFormSubmitted');
-		return $form;
-	}
-	
-	
-	
-	public function seasonFormSubmitted(Form $form)
-	{
-		$values = $form->getValues();
-		$this->redirect('Team:single', array('id' => $this->team->id, 'season' => $values->seasonId));
 	}
 	
 	
