@@ -1,8 +1,8 @@
 <div class="block">
 
-    <div class="title">Narozeniny</div>
+    <h5>Narozeniny</h5>
     
-    <table class="block-table">
+    <table class="twelve block-table">
     {foreach $birthdays as $bday}
 	<tr>
 	    <td><a href="{link Player:single $bday->id}">{$bday->name} {$bday->surname}</a></td>
@@ -12,3 +12,5 @@
     </table>
     
 </div>
+
+<hr />

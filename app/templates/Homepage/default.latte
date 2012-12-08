@@ -8,24 +8,26 @@
 {else}
     {var $image = $stickyArticle->category->image->path}
 {/if}
-<div class="article sticky">
-    <a href="{link Article: $stickyArticle->id}"><img class="teaser" src="{$basePath}/{$image}" title="{$stickyArticle->title}" alt="{$stickyArticle->title}" /></a>
-    <h2><a href="{link Article: $stickyArticle->id}">{$stickyArticle->title|upper}</a></h2>
-    <div class="info">
-	<span class="created">{$stickyArticle->created|date:'j.n.Y H:i'}</span>
-	<span class="delimiter">|</span>
-	<span class="category">{$stickyArticle->category->name}</span>
-	<span class="delimiter">|</span>
-	<span class="author">{$stickyArticle->user->login}</span>
-	<span class="delimiter">|</span>
-	<span class="comment-count" title="Počet komentářů">
-	    <a href="{link Article: $stickyArticle->id}#comments"><img src="{$basePath}/images/comments.gif" alt="Počet komentářů" /> {$stickyArticle->related('comment')->count()}</a>
-	</span>
-    </div>
-    <p class="text">{!$stickyArticle->text|striptags|truncate:440}</p>
-</div>
+<article class="sticky">
+    
+    <h3><a href="{link Article: $stickyArticle->id}">{$stickyArticle->title}</a></h3>
+	<h6>Napsal {$stickyArticle->user->login}, {$stickyArticle->created|date:'j.n.Y H:i'}</h6>
+
+	<div class="row">
+		<div class="six columns">
+			<a href="{link Article: $stickyArticle->id}"><img class="teaser" src="{$basePath}/{=$image}" title="{$stickyArticle->title}" alt="{$stickyArticle->title}" /></a>
+		</div>
+		<div class="six columns">
+			<p class="text">{!$stickyArticle->text|striptags|truncate:440}</p>
+			<a class="right" href="{link Article: $stickyArticle->id}#comments"><img src="{$basePath}/images/comments.gif" alt="Počet komentářů" /> komentáře: {$stickyArticle->related('comment')->count()}</a>
+		</div>
+	</div>
+
+</article>
+<hr />
 {/if}
 
+{* Article list *}
 {snippet articles}
 
 {foreach $articles as $article}
@@ -34,26 +36,28 @@
 {else}
     {var $image = $article->category->image->path}
 {/if}
-<div class="article">
-    <a href="{link Article: $article->id}"><img class="teaser" src="{$basePath}/{=$image|thumb:165:110}" title="{$article->title}" alt="{$article->title}" /></a>
-    <h2><a href="{link Article: $article->id}">{$article->title}</a></h2>
-    <div class="info">
-	<span class="created">{$article->created|date:'j.n.Y H:i'}</span>
-	<span class="delimiter">|</span>
-	<span class="category">{$article->category->name}</span>
-	<span class="delimiter">|</span>
-	<span class="author">{$article->user->login}</span>
-	<span class="delimiter">|</span>
-	<span class="comment-count" title="Počet komentářů">
-	    <a href="{link Article: $article->id}#comments"><img src="{$basePath}/images/comments.gif" alt="Počet komentářů" /> {$article->related('comment')->count()}</a>
-	</span>
-    </div>
-    <p class="text">{!$article->text|striptags|truncate:240}</p>
-</div>
+<article>
+
+	<h3><a href="{link Article: $article->id}">{$article->title}</a></h3>
+	<h6>Napsal {$article->user->login}, {$article->created|date:'j.n.Y H:i'}</h6>
+
+	<div class="row">
+		<div class="four columns">
+			<a href="{link Article: $article->id}"><img class="teaser" src="{$basePath}/{=$image|thumb:225:150}" title="{$article->title}" alt="{$article->title}" /></a>
+		</div>
+		<div class="eight columns">
+			<p class="text">{!$article->text|striptags|truncate:360}</p>
+			<a class="right" href="{link Article: $article->id}#comments"><img src="{$basePath}/images/comments.gif" alt="Počet komentářů" /> komentáře: {$article->related('comment')->count()}</a>
+		</div>
+	</div>
+
+</article>
+<hr />
 {/foreach}
 
 {control vp}
 
 {/snippet}
+{* End Article list *}
 
 {/block}

@@ -11,10 +11,12 @@
 
 <div class="squad">
     
-    <table class="squad format">
-	<tr>
-	    <th colspan="3">Brankáři</th>
-	</tr>
+	<table class="twelve squad format">
+		<thead>
+			<tr>
+				<th colspan="3">Brankáři</th>
+			</tr>
+		</thead>
 	{foreach $goalkeepers as $player}
 	<tr>
 	    <td class="name"><a href="{link Player:single $player->id}">{$player->name} {$player->surname}</a></td>
@@ -24,10 +26,12 @@
 	{/foreach}
     </table>
 
-    <table class="squad format">
-	<tr>
-	    <th colspan="3">Obránci</th>
-	</tr>
+    <table class="twelve squad format">
+	<thead>
+		<tr>
+			<th colspan="3">Obránci</th>
+		</tr>
+	</thead>
 	{foreach $defenders as $player}
 	<tr>
 	    <td class="name"><a href="{link Player:single $player->id}">{$player->name} {$player->surname}</a></td>
@@ -37,10 +41,12 @@
 	{/foreach}
     </table>
 
-    <table class="squad format">
-	<tr>
-	    <th colspan="3">Záložníci</th>
-	</tr>
+    <table class="twelve squad format">
+	<thead>
+		<tr>
+			<th colspan="3">Záložníci</th>
+		</tr>
+	</thead>
 	{foreach $midfielders as $player}
 	<tr>
 	    <td class="name"><a href="{link Player:single $player->id}">{$player->name} {$player->surname}</a></td>
@@ -50,10 +56,12 @@
 	{/foreach}
     </table>
 
-    <table class="squad format">
-	<tr>
-	    <th colspan="3">Útočníci</th>
-	</tr>
+    <table class="twelve squad format">
+	<thead>
+		<tr>
+			<th colspan="3">Útočníci</th>
+		</tr>
+	</thead>
 	{foreach $forwards as $player}
 	<tr>
 	    <td class="name"><a href="{link Player:single $player->id}">{$player->name} {$player->surname}</a></td>
@@ -65,7 +73,7 @@
 </div>
 
 <div class="center">
-    <a href="{$basePath}/images/players/veterov-team.jpg" class="colorbox" title="Sokol Věteřov 2011/2012">
+	<a class="th" href="{$basePath}/images/players/veterov-team.jpg" class="colorbox" title="Sokol Věteřov 2011/2012">
 	<img src="{$basePath}/{='images/players/veterov-team.jpg'|thumb:320:240}" class="style" alt="Sokol Věteřov 2011/2012" />
     </a>
 </div>

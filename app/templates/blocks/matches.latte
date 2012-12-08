@@ -1,8 +1,8 @@
 <div class="block">
 
-    <div class="title">Minulý zápas</div>
+    <h5>Minulý zápas</h5>
     
-    <table class="block-table">
+    <table class="twelve block-table">
     {foreach $lastMatch as $match}
 	<tr>
 	    <td>{$match->date|date:'d.m.Y H:i'}</td>
@@ -19,11 +19,13 @@
     
 </div>
 
+<hr />
+
 <div class="block">
 
-    <div class="title">Příští zápas</div>
+    <h5>Příští zápas</h5>
     
-    <table class="block-table">
+    <table class="twelve block-table">
     {foreach $nextMatch as $match}
 	<tr>
 	    <td>{$match->date|date:'d.m.Y H:i'}</td>
@@ -39,3 +41,5 @@
     </table>
     
 </div>
+
+<hr />

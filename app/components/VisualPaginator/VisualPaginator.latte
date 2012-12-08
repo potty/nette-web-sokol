@@ -4,26 +4,26 @@
 {var $prev = '« Předchozí'}
 {var $next = 'Další »'}
 
-<div class="paginator">
+<ul class="pagination">
 	{if $paginator->isFirst()}
-	<span class="button">{$prev}</span>
+		<li class="arrow unavailable">{$prev}</li>
 	{else}
-	<a href="{link this, 'page' => $paginator->page - 1}" class="ajax">{$prev}</a>
+		<li><a href="{link this, 'page' => $paginator->page - 1}" class="ajax">{$prev}</a></li>
 	{/if}
 
 	{foreach $steps as $step}
 	{if $step == $paginator->page}
-		<span class="current">{$step}</span>
+		<li class="current"><a href="">{$step}</a></li>
 	{else}
-		<a href="{link this, 'page' => $step}" class="ajax">{$step}</a>
+		<li><a href="{link this, 'page' => $step}" class="ajax">{$step}</a></li>
 	{/if}
-	{if $iterator->nextValue > $step + 1}<span>…</span>{/if}
+	{if $iterator->nextValue > $step + 1}<li>…</li>{/if}
 	{/foreach}
 
 	{if $paginator->isLast()}
-	<span class="button">{$next}</span>
+		<li class="arrow">{$next}</li>
 	{else}
-	<a href="{link this, 'page' => $paginator->page + 1}" class="ajax">{$next}</a>
+		<li><a href="{link this, 'page' => $paginator->page + 1}" class="ajax">{$next}</a></li>
 	{/if}
-</div>
+</ul>
 {/if}

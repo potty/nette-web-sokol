@@ -1,12 +1,13 @@
-<ul class="menu">
+<ul class="nav-bar">
     
-    <li class="single"><a href="{link Homepage:}">Domů</a></li>
+    <li><a href="{link Homepage:}">Domů</a></li>
     
-    <li class="single"><a href="{link Page:club}">Klub</a></li>
+    <li><a href="{link Page:club}">Klub</a></li>
     
-    <li>
-	<a href="{link Player:}" class="drop">Tým</a>
-	<ul class="dropdown">
+    <li class="has-flyout">
+	<a href="#">Tým</a>
+	<a href="#" class="flyout-toggle"><span> </span></a>
+	<ul class="flyout">
 	    <li><a href="{link Player:}">Soupiska</a></li>
 	    <li><a href="{link Match:}">Zápasy</a></li>
 	    <li><a href="{link Player:statistics}">Statistiky</a></li>
@@ -17,9 +18,10 @@
 	</ul>
     </li>
     
-    <li>
-	<a href="{link Match:competition}" class="drop">Soutěž</a>
-	<ul class="dropdown">
+    <li class="has-flyout">
+	<a href="#" class="drop">Soutěž</a>
+	<a href="#" class="flyout-toggle"><span> </span></a>
+	<ul class="flyout">
 	    <li><a href="{link Match:competition}">Zápasy</a></li>
 	    <li><a href="{link Match:table}">Tabulka</a></li>
 	</ul>

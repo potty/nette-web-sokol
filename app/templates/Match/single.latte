@@ -4,18 +4,20 @@
 
 {if $allowedEdit}
     <div class="links">
-	<a href="{link Match:edit $match->id}" class="button">Upravit zápas</a>
+	<a href="{link Match:edit $match->id}" class="tiny secondary radius button">Upravit zápas</a>
     </div>
 {/if}
 
 <div class="match-overview">
     
-    <table class="match-table">
+    <table class="twelve match-table">
+    <thead>
 	<tr>
 	    <th>{$match->date|date:'d.m.Y H:i'}</th>
 	    <th></th>
 	    <th class="right">{$match->competition->name} {if $match->round} - {$match->round}{/if}</th>
 	</tr>
+	</thead>
 	<tr>
 	    <td class="team-name center"><a href="{link Team:single $match->home_id}">{$match->ref('team', 'home_id')->name}</a></td>
 	    <td class="score center">{$match->score_home} : {$match->score_away}</td>
@@ -76,7 +78,7 @@
     {if $article}
 	{if $allowedEditArticle}
 	<div class="links">
-	    <a href="{link Article:edit $article->id}" class="button">Upravit článek</a>
+	    <a href="{link Article:edit $article->id}" class="tiny secondary radius button">Upravit článek</a>
 	</div>
 	{/if}
 	<div class="article-full">
