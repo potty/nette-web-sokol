@@ -71,8 +71,11 @@ class Model extends Nette\Object
     {
 	return $this->database->table('position');
     }
-    
-    public function getSeasons()
+
+	/**
+	 * @return \Nette\Database\Table\Selection
+	 */
+	public function getSeasons()
     {
 	return $this->database->table('season');
     }

@@ -31,16 +31,16 @@ class SignPresenter extends BasePresenter
 	public function signInFormSubmitted($form)
 	{
 	    try {
-		$user = $this->getUser();
-		$values = $form->getValues();
-		if ($values->persistent) {
-		    $user->setExpiration('+30 days', FALSE);
-		}
-		$user->login($values->username, $values->password);
-		$this->flashMessage('Přihlášení bylo úspěšné.', 'success');
-		$this->redirect('Homepage:');
+			$user = $this->getUser();
+			$values = $form->getValues();
+			if ($values->persistent) {
+				$user->setExpiration('+30 days', FALSE);
+			}
+			$user->login($values->username, $values->password);
+			$this->flashMessage('Přihlášení bylo úspěšné.', 'success');
+			$this->redirect('Homepage:');
 	    } catch (NS\AuthenticationException $e) {
-		$this->getPresenter()->flashMessage($e->getMessage(), 'error');
+			$this->getPresenter()->flashMessage($e->getMessage(), 'error');
 	    }
 	}
 

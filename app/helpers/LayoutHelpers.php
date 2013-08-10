@@ -111,6 +111,6 @@ abstract class LayoutHelpers extends Nette\Object
 
         public static function setContext($context)
         {
-		self::$context = $context;
+			self::$context = $context;
         }
 }

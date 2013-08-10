@@ -54,81 +54,81 @@ class PlayerPresenter extends BasePresenter {
     
     public function renderSingle()
     {
-	$this->template->player = $this->player;
-	$teamId = $this->model->getTeamsPlayers()->select('team_id')->where('player_id = ? AND season_id = ?', $this->player->id, $this->currentSeason)->fetch();
-	$this->template->team = $this->model->getTeams()->find($teamId['team_id'])->fetch();
-	$matches = $this->model->getMatches()
-		->where('(home_id = ? OR away_id = ?) AND played = ? AND competition.name = ? AND season_id = ?', $teamId['team_id'], $teamId['team_id'], true, 'IV. třída', $this->currentSeason)
-		->order('date ASC');
-	
-	$minutes = array();
-	$goals = array();
-	$assists = array();
-	$yellow_cards = array();
-	$red_cards = array();
-	foreach ($matches as $match) {
-	    $mins = 0;
-	    $starting = $this->model->getPlayersMatches()->where('match_id = ? AND player_id = ?', $match->id, $this->player->id)->count();
-	    // if player played at least 1 match
-	    if ($starting > 0) {
-		$mins = 90;
-		$result = $this->model->getSubstitutions()->select('minute')->where('match_id = ? AND player_out_id = ?', $match->id, $this->player->id)->fetch();
-		if ($result) $mins -= (90 - $result['minute']);
-	    } else {
-		$result = $this->model->getSubstitutions()->select('minute')->where('match_id = ? AND player_in_id = ?', $match->id, $this->player->id)->fetch();
-		if ($result) $mins = (90 - $result['minute']);
-	    }
-	    // if number of minutes in match > 0
-	    if ($mins != 0) {
-		$red = $this->model->getEvents()->where('match_id = ? AND player_id = ? AND event_type.name = ?', $match->id, $this->player->id, 'červená karta')->fetch();
-		// if player received red card, minutes are subtracted
-		if ($red)
-		    $mins -= (90 - $red['minute']);
-		$minutes[$match->id] = $mins;
-		$goals[$match->id] = $this->model->getEvents()->where('match_id = ? AND player_id = ? AND event_type.name = ?', $match->id, $this->player->id, 'gól')->count();
-		$assists[$match->id] = $this->model->getEvents()->where('match_id = ? AND assist = ? AND event_type.name = ?', $match->id, $this->player->id, 'gól')->count();
-		$yellow_cards[$match->id] = $this->model->getEvents()->where('match_id = ? AND player_id = ? AND event_type.name = ?', $match->id, $this->player->id, 'žlutá karta')->count();
-		$red_cards[$match->id] = $this->model->getEvents()->where('match_id = ? AND player_id = ? AND event_type.name = ?', $match->id, $this->player->id, 'červená karta')->count();
-	    } else {
-		$minutes[$match->id] = '-';
-		$goals[$match->id] = '-';
-		$assists[$match->id] = '-';
-		$yellow_cards[$match->id] = '-';
-		$red_cards[$match->id] = '-';
-	    }
-	    
-	}
-	
-	// trainings
-	$training_total = 0;
-	$training_part_num = 0;
-	$percentage = 0;
-	$participating = array();
-	$trainings = $this->model->getTrainings()->where('season_id = ?', $this->currentSeason)->order('date DESC');
-	foreach ($trainings as $training) {
-	    $training_total++;
-	    $count = $this->model->getPlayersTrainings()->where('player_id = ? AND training_id = ?', $this->player->id, $training->id)->count();
-	    if ($count > 0) {
-		$training_part_num++;
-		$participating[$training->id] = true;
-	    } else {
-		$participating[$training->id] = false;
-	    }
-	}
-	if ($training_part_num != 0) $percentage = ($training_part_num / $training_total) * 100;
-	
-	$this->template->yellow_cards = $yellow_cards;
-	$this->template->red_cards = $red_cards;
-	$this->template->minutes = $minutes;
-	$this->template->goals = $goals;
-	$this->template->assists = $assists;
-	$this->template->matches = $matches;
-	$this->template->currentSeason = $this->seasonName;
-	$this->template->trainings = $trainings;
-	$this->template->trainingParticipate = $participating;
-	$this->template->trainingsTotal = $training_total;
-	$this->template->trainingsPartNum = $training_part_num;
-	$this->template->trainingsPercentage = $percentage;
+		$this->template->player = $this->player;
+		$teamId = $this->model->getTeamsPlayers()->select('team_id')->where('player_id = ? AND season_id = ?', $this->player->id, $this->currentSeason)->fetch();
+		$this->template->team = $this->model->getTeams()->find($teamId['team_id'])->fetch();
+		$matches = $this->model->getMatches()
+			->where('(home_id = ? OR away_id = ?) AND played = ? AND competition.name = ? AND season_id = ?', $teamId['team_id'], $teamId['team_id'], true, 'IV. třída', $this->currentSeason)
+			->order('date ASC');
+
+		$minutes = array();
+		$goals = array();
+		$assists = array();
+		$yellow_cards = array();
+		$red_cards = array();
+		foreach ($matches as $match) {
+			$mins = 0;
+			$starting = $this->model->getPlayersMatches()->where('match_id = ? AND player_id = ?', $match->id, $this->player->id)->count();
+			// if player played at least 1 match
+			if ($starting > 0) {
+			$mins = 90;
+			$result = $this->model->getSubstitutions()->select('minute')->where('match_id = ? AND player_out_id = ?', $match->id, $this->player->id)->fetch();
+			if ($result) $mins -= (90 - $result['minute']);
+			} else {
+			$result = $this->model->getSubstitutions()->select('minute')->where('match_id = ? AND player_in_id = ?', $match->id, $this->player->id)->fetch();
+			if ($result) $mins = (90 - $result['minute']);
+			}
+			// if number of minutes in match > 0
+			if ($mins != 0) {
+			$red = $this->model->getEvents()->where('match_id = ? AND player_id = ? AND event_type.name = ?', $match->id, $this->player->id, 'červená karta')->fetch();
+			// if player received red card, minutes are subtracted
+			if ($red)
+				$mins -= (90 - $red['minute']);
+			$minutes[$match->id] = $mins;
+			$goals[$match->id] = $this->model->getEvents()->where('match_id = ? AND player_id = ? AND event_type.name = ?', $match->id, $this->player->id, 'gól')->count();
+			$assists[$match->id] = $this->model->getEvents()->where('match_id = ? AND assist = ? AND event_type.name = ?', $match->id, $this->player->id, 'gól')->count();
+			$yellow_cards[$match->id] = $this->model->getEvents()->where('match_id = ? AND player_id = ? AND event_type.name = ?', $match->id, $this->player->id, 'žlutá karta')->count();
+			$red_cards[$match->id] = $this->model->getEvents()->where('match_id = ? AND player_id = ? AND event_type.name = ?', $match->id, $this->player->id, 'červená karta')->count();
+			} else {
+			$minutes[$match->id] = '-';
+			$goals[$match->id] = '-';
+			$assists[$match->id] = '-';
+			$yellow_cards[$match->id] = '-';
+			$red_cards[$match->id] = '-';
+			}
+
+		}
+
+		// trainings
+		$training_total = 0;
+		$training_part_num = 0;
+		$percentage = 0;
+		$participating = array();
+		$trainings = $this->model->getTrainings()->where('season_id = ?', $this->currentSeason)->order('date DESC');
+		foreach ($trainings as $training) {
+			$training_total++;
+			$count = $this->model->getPlayersTrainings()->where('player_id = ? AND training_id = ?', $this->player->id, $training->id)->count();
+			if ($count > 0) {
+			$training_part_num++;
+			$participating[$training->id] = true;
+			} else {
+			$participating[$training->id] = false;
+			}
+		}
+		if ($training_part_num != 0) $percentage = ($training_part_num / $training_total) * 100;
+
+		$this->template->yellow_cards = $yellow_cards;
+		$this->template->red_cards = $red_cards;
+		$this->template->minutes = $minutes;
+		$this->template->goals = $goals;
+		$this->template->assists = $assists;
+		$this->template->matches = $matches;
+		$this->template->currentSeason = $this->seasonName;
+		$this->template->trainings = $trainings;
+		$this->template->trainingParticipate = $participating;
+		$this->template->trainingsTotal = $training_total;
+		$this->template->trainingsPartNum = $training_part_num;
+		$this->template->trainingsPercentage = $percentage;
     }
     
     
@@ -167,9 +167,6 @@ class PlayerPresenter extends BasePresenter {
 			->setPrompt('- Vyberte -')
 			->addRule(Form::FILLED, 'Je nutné vybrat pozici.');
 		
-		$form->addSelect('teamId', 'Tým:', $this->model->getTeams()->order('name ASC')->fetchPairs('id', 'name'))
-			->setPrompt('- Vyberte -');
-		
 		$form->addText('photo', 'Foto:', 40, 100);
 		
 		$form->addSubmit('create', 'Vytvořit');
@@ -191,7 +188,6 @@ class PlayerPresenter extends BasePresenter {
 		    'name' => $form->values->name,
 		    'surname' => $form->values->surname,
 		    'position_id' => $form->values->positionId,
-		    'team_id' => $form->values->teamId,
 		);
 	
 		if ($form->values->birth != '') $data['birth'] = $form->values->birth;
