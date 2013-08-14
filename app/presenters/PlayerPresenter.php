@@ -71,7 +71,6 @@ class PlayerPresenter extends BasePresenter
 		$this->template->player = $this->player;
 		$teamId = $this->model->getTeamsPlayers()->select('team_id')->where('player_id = ? AND season_id = ?', $this->player->id, $this->currentSeason)->fetch();
 
-		\Nette\Diagnostics\Debugger::barDump($teamId);
 		// Player is registered for current season
 		if ($teamId) {
 			$this->template->team = $this->model->getTeams()->find($teamId['team_id'])->fetch();
