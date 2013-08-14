@@ -32,6 +32,8 @@ class CommentsForm extends Nette\Application\UI\Form {
 		$this->addTextArea('text', 'Komentář:')
 			->setRequired('Je nutné vyplnit komentář.');
 
+		$this->addAntispam();
+
 		$this->addSubmit('send', 'Odeslat');
 
 		$this->onSuccess[] = callback($this, 'process');

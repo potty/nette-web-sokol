@@ -42,6 +42,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
 		$today = date('Y-m-d');
 		$result = $this->model->getSeasons()->select('id')->where("start_date <= ? AND end_date >= ?", $today, $today)->fetch();
 		$this->currentSeason = $result['id'];
+		AntispamControl::register();
 	
 		if (!$this->getUser()->isLoggedIn()) {
 			if ($this->getUser()->isInRole('guest')) {

@@ -31,7 +31,8 @@
 		</div>
 
     </div>
-    
+
+	{ifset $matches}
     <div class="tabbable">
 
 		{* Tabs *}
@@ -107,7 +108,10 @@
 
 		</div><!-- /.tab-content -->
     </div><!-- /.tabbable -->
-    
+    {else}
+		Hráč neodehrál tuto sezonu žádný zápas.
+	{/ifset}
+
 </div>
 
 <script type="text/javascript">
