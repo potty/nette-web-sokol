@@ -1,5 +1,5 @@
 {snippet}
-<table id="data-table" class="twelve">
+<table id="data-table" class="table table-condensed table-hover">
     <thead>
 	<tr class="pointer">
 	    <th>Hráč</th>
@@ -18,19 +18,19 @@
     
     <tbody>
     {foreach $players as $player}
-    <tr>
-	<td><a href="{plink Player:single $player->id}">{$player->surname} {$player->name}</a></td>
-	<td>{$stats[$player->id]['matches']}</td>	
-	<td>{$stats[$player->id]['starting']}</td>	
-	<td>{$stats[$player->id]['subs_in']}</td>	
-	<td>{$stats[$player->id]['subs_out']}</td>	
-	<td>{$stats[$player->id]['mins']}</td>	
-	<td>{$stats[$player->id]['goals']}</td>	
-	<td>{$stats[$player->id]['goals_pen']}</td>	
-	<td>{$stats[$player->id]['assists']}</td>	
-	<td>{$stats[$player->id]['y_cards']}</td>	
-	<td>{$stats[$player->id]['r_cards']}</td>	
-    </tr>
+	    <tr>
+		<td><a href="{plink Player:single $player->id}">{$player->surname} {$player->name}</a></td>
+		<td>{$stats[$player->id]['matches']}</td>	
+		<td>{$stats[$player->id]['starting']}</td>	
+		<td>{$stats[$player->id]['subs_in']}</td>	
+		<td>{$stats[$player->id]['subs_out']}</td>	
+		<td>{$stats[$player->id]['mins']}</td>	
+		<td>{$stats[$player->id]['goals']}</td>	
+		<td>{$stats[$player->id]['goals_pen']}</td>	
+		<td>{$stats[$player->id]['assists']}</td>	
+		<td>{$stats[$player->id]['y_cards']}</td>	
+		<td>{$stats[$player->id]['r_cards']}</td>	
+	    </tr>
     {/foreach}
     </tbody>
     

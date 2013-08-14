@@ -3,23 +3,25 @@
 {block content}
 
 {snippet}
-<table class="format">
-    <tr>
-	<th>Login</th>
-	<th>Jméno a příjmení</th>
-	<th>E-mail</th>
-	<th>Role</th>
-	<th>Aktivován</th>
-	<th>Akce</th>
-    </tr>
+<table class="table">
+	<thead>
+	    <tr>
+		<th>Login</th>
+		<th>Jméno a příjmení</th>
+		<th>E-mail</th>
+		<th>Role</th>
+		<th>Aktivován</th>
+		<th>Akce</th>
+	    </tr>
+    </thead>
     {foreach $users as $user}
     <tr n:class="!$user->is_active ? not-active">
-	<td>{$user->login}</td>
-	<td>{$user->name} {$user->surname}</td>
-	<td>{$user->email}</td>
-	<td>{$user->role->name}</td>
-	<td>{$user->is_active ? 'Ano' : 'Ne'}</td>
-	<td><a n:href="changeActivation! $user->id, $user->is_active" class="ajax">{$user->is_active ? 'Deaktivovat' : 'Aktivovat'}</a></td>
+		<td>{$user->login}</td>
+		<td>{$user->name} {$user->surname}</td>
+		<td>{$user->email}</td>
+		<td>{$user->role->name}</td>
+		<td>{$user->is_active ? 'Ano' : 'Ne'}</td>
+		<td><a n:href="changeActivation! $user->id, $user->is_active" class="ajax">{$user->is_active ? 'Deaktivovat' : 'Aktivovat'}</a></td>
     </tr>
     {/foreach}
 </table>

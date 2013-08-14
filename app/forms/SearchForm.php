@@ -17,7 +17,7 @@ class SearchForm extends Nette\Application\UI\Form {
 		$this->addText('query')
 			->setAttribute('placeholder', 'Hledat');
 
-		$this->addImage('submit', Nette\Environment::getHttpRequest()->getUrl()->getBasePath() . 'images/search-icon-gray.png', 'Hledat');
+		$this->addSubmit('submit', 'Hledat');
 
 		$this->onSuccess[] = callback($this, 'process');
     }

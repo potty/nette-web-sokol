@@ -7,11 +7,11 @@
 
 {block content}
 
-<h1>{$title}</h1>
+<h1 class="page-header">{$title}</h1>
 
 <div class="squad">
     
-	<table class="twelve squad format">
+	<table class="table table-bordered">
 		<thead>
 			<tr>
 				<th colspan="3">Brankáři</th>
@@ -26,7 +26,7 @@
 	{/foreach}
     </table>
 
-    <table class="twelve squad format">
+    <table class="table table-bordered">
 	<thead>
 		<tr>
 			<th colspan="3">Obránci</th>
@@ -41,7 +41,7 @@
 	{/foreach}
     </table>
 
-    <table class="twelve squad format">
+    <table class="table table-bordered">
 	<thead>
 		<tr>
 			<th colspan="3">Záložníci</th>
@@ -56,7 +56,7 @@
 	{/foreach}
     </table>
 
-    <table class="twelve squad format">
+    <table class="table table-bordered">
 	<thead>
 		<tr>
 			<th colspan="3">Útočníci</th>
@@ -74,7 +74,7 @@
 
 <div class="center">
 	<a class="th" href="{$basePath}/images/players/veterov-team.jpg" class="colorbox" title="Sokol Věteřov 2011/2012">
-	<img src="{$basePath}/{='images/players/veterov-team.jpg'|thumb:320:240}" class="style" alt="Sokol Věteřov 2011/2012" />
+	<img src="{$basePath}/{='images/players/veterov-team.jpg'|thumb:320:240}" class="img-thumbnail" alt="Sokol Věteřov 2011/2012" />
     </a>
 </div>
 

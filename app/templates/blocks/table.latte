@@ -1,8 +1,10 @@
-<div class="block">
+<div class="panel">
 
-    <h5>Tabulka</h5>
+	<div class="panel-heading">
+		<h3 class="panel-title">Tabulka</h3>
+  	</div>
     
-    <table class="twelve block-table">
+    <table class="table table-condensed panel-table">
     {foreach $table as $team}
 	<tr n:class="$team['team'] == 'Věteřov' ? highlight">
 	    <td>{$iterator->counter}.</td>
@@ -16,5 +18,3 @@
     <a href="{link Match:table}" class="alt-link">Detailní tabulka</a>
     
 </div>
-
-<hr />

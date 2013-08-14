@@ -78,28 +78,34 @@ $(function() {
     };
     $.timepicker.setDefaults($.timepicker.regional['cs']);
 
-    $('input[data-dateinput-type]').dateinput({
-	    datetime: {
-		    dateFormat: 'd.m.yy',
-		    timeFormat: 'h:mm'
-	    },
-	    'datetime-local': {
-		    dateFormat: 'd.m.yy',
-		    timeFormat: 'h:mm'
-	    },
-	    date: {
-		    dateFormat: 'd.m.yy'
-	    },
-	    month: {
-		    dateFormat: 'MM yy'
-	    },
-	    week: {
-		    dateFormat: "w. 'týden' yy"
-	    },
-	    time: {
-		    timeFormat: 'h:mm'
-	    }
-    });
+	$('input[data-dateinput-type]').dateinput({
+		datetime: {
+			dateFormat: 'd.m.yy',
+			timeFormat: 'H:mm',
+			options: { // nastavení datepickeru pro konkrétní typ
+				changeYear: true
+			}
+		},
+		'datetime-local': {
+			dateFormat: 'd.m.yy',
+			timeFormat: 'H:mm'
+		},
+		date: {
+			dateFormat: 'd.m.yy'
+		},
+		month: {
+			dateFormat: 'MM yy'
+		},
+		week: {
+			dateFormat: "w. 'týden' yy"
+		},
+		time: {
+			timeFormat: 'H:mm'
+		},
+		options: { // globální nastavení datepickeru
+			stepMinute: 10
+		}
+	});
 });
 
 
@@ -121,6 +127,9 @@ $(document).ready(function() {
  * Custom scripts
  */
 $(function() {
+
+	// Nette AJAX init
+	$.nette.init();
    
    // Showing/hiding content
    $('.toggle').click(function() {

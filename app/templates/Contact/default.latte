@@ -2,13 +2,13 @@
 
 {block content}
 
-<h3>{$title}</h3>
+<h2 class="page-header">{$title}</h2>
 
 <ul n:if="$accessAllowed['contactEdit']" class="inline-list">
 	<li><a href="{link Contact:add}">+ Přidat kontakt</a></li>
 </ul>
 
-<table class="twelve">
+<table class="table table-condensed">
 	<thead>
 	<tr>
 		<th>Jméno</th>

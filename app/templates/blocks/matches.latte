@@ -1,45 +1,45 @@
-<div class="block">
+<div class="panel">
 
-    <h5>Minulý zápas</h5>
+	<div class="panel-heading">
+		<h3 class="panel-title">Minulý zápas</h3>
+  	</div>
     
-    <table class="twelve block-table">
+    <table class="table table-condensed panel-table">
     {foreach $lastMatch as $match}
 	<tr>
 	    <td>{$match->date|date:'d.m.Y H:i'}</td>
 	    <td></td>
-	    <td class="right">{$match->competition->name} {if $match->round} - {$match->round}{/if}</td>
+	    <td class="text-right">{$match->competition->name} {if $match->round} - {$match->round}{/if}</td>
 	</tr>
 	<tr>
 	    <td class="team-name left"><a href="{link Team:single $match->home_id}">{$match->ref('team', 'home_id')->name}</a></td>
 	    <td class="score"><a href="{link Match:single $match->id}">{$match->score_home} : {$match->score_away}</a></td>
-	    <td class="team-name right"><a href="{link Team:single $match->away_id}">{$match->ref('team', 'away_id')->name}</a></td>
+	    <td class="team-name text-right"><a href="{link Team:single $match->away_id}">{$match->ref('team', 'away_id')->name}</a></td>
 	</tr>
     {/foreach}
     </table>
     
 </div>
 
-<hr />
+<div class="panel">
 
-<div class="block">
-
-    <h5>Příští zápas</h5>
+	<div class="panel-heading">
+		<h3 class="panel-title">Příští zápas</h3>
+  	</div>
     
-    <table class="twelve block-table">
+    <table class="table table-condensed panel-table">
     {foreach $nextMatch as $match}
 	<tr>
 	    <td>{$match->date|date:'d.m.Y H:i'}</td>
 	    <td></td>
-	    <td class="right">{$match->competition->name} {if $match->round} - {$match->round}{/if}</td>
+	    <td class="text-right">{$match->competition->name} {if $match->round} - {$match->round}{/if}</td>
 	</tr>
 	<tr>
 	    <td class="team-name left"><a href="{link Team:single $match->home_id}">{$match->ref('team', 'home_id')->name}</a></td>
 	    <td class="score">- : -</td>
-	    <td class="team-name right"><a href="{link Team:single $match->away_id}">{$match->ref('team', 'away_id')->name}</a></td>
+	    <td class="team-name text-right"><a href="{link Team:single $match->away_id}">{$match->ref('team', 'away_id')->name}</a></td>
 	</tr>
     {/foreach}
     </table>
     
 </div>
-
-<hr />

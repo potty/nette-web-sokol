@@ -1,8 +1,10 @@
-<div class="block">
+<div class="panel">
 
-    <h5>Střelci týmu</h5>
+    <div class="panel-heading">
+        <h3 class="panel-title">Střelci týmu</h3>
+    </div>
     
-    <table class="twelve block-table">
+    <table class="table table-condensed panel-table">
     {foreach $scorers as $scorer}
 	<tr>
 	    <td><a href="{link Player:single $scorer->id}">{$scorer->name} {$scorer->surname}</a></td>

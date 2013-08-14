@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<!--[if IE 8]>         <html class="no-js lt-ie9" lang="en"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
-
+<html lang="cs">
 <head>
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	
 	<meta name="description" content="Oficiální stránky fotbalového klubu Sokol Věteřov.">
 	<meta name="keywords" content="věteřov, sokol, fotbal" />
@@ -13,23 +12,23 @@
 
 	<title>{ifset $title}{$title} &#124; Sokol Věteřov{elseifset $titleComplete}{$titleComplete}{else}Sokol Věteřov{/ifset}</title>
 
-	<!-- Zurb Foundation -->
-	<link rel="stylesheet" href="{$basePath}/css/normalize.css">
-	<link rel="stylesheet" href="{$basePath}/css/foundation.min.css">
-	
-	{*<link rel="stylesheet/less" type="text/css" href="{$basePath}/css/style.less">*}
-	<link type="text/css" href="{$basePath}/css/ui-lightness/jquery-ui-1.8.17.custom.css" rel="Stylesheet" />
+	<!-- Bootstrap -->
+	<link rel="stylesheet" href="{$basePath}/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css">
+
+	<link rel="stylesheet" href="{$basePath}/css/style.css">
+	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
 	
 	<link rel="stylesheet" type="text/css" href="{$basePath}/css/jquery-ui-timepicker-addon.css">
 	<link rel="stylesheet" type="text/css" href="{$basePath}/css/dateInput.css">
-	
-	<script src="{$basePath}/js/vendor/custom.modernizr.js"></script>
 
 	{block head}{/block}
 	
 </head>
 
 <body>
+
+	<div class="container">
 	
 	<script> document.body.className+=' js' </script>
 
@@ -47,45 +46,37 @@
 	<!-- Header -->
 
 	<div class="row">
-		<div class="twelve columns">
-			
-			<div class="row">
 
 				<!-- Page title -->
-				<div class="eight columns">
-					<h1>
+				<div class="col-lg-8">
+					<h1 class="site-header">
 						<a href="{link Homepage: }" title="Domů">Sokol Věteřov</a>
 					</h1>
 				</div>
 				<!-- End Page title -->
 				
 				<!-- Login and Search -->
-				<div class="four columns">
-					<div class="user right">
+				<div class="col-lg-4">
+					<div class="pull-right">
 					{if $user->isLoggedIn()}
-						<img src="{$basePath}/images/user.png" alt="User" />
+						<i class="icon-user"></i>
 						<span class="name">{$user->getIdentity()->login} ({$user->getIdentity()->name} {$user->getIdentity()->surname})</span> |
 						<a n:href="signOut!">Odhlásit</a>
 					{else}
 						<a href="{link Sign:in}">Přihlásit</a> | <a href="{link Page:register}">Registrace</a>
 					{/if}
 					</div>
-					<div id="search right">
-						{form searchForm}
-						{input query}{input submit}
-						{/form searchForm}
-					</div>
 				</div>
 				<!-- End Login and Search -->
-
-			</div>
-
 			
-			{include './blocks/menu.latte', accessAllowed => $accessAllowed}
-		</div>
 	</div>
 
 	<!-- End Header -->
+
+
+	<!-- Navigation -->
+	{include './blocks/menu.latte', accessAllowed => $accessAllowed}
+	<!-- End Navigation -->
 
 
 	<!-- Main Page Content and Sidebar -->
@@ -93,7 +84,7 @@
 	<div class="row">
 		
 		<!-- Main Content -->
-		<div class="eight columns" role="content">
+		<div class="col-lg-8" role="content">
 
 			{snippet flash}
 			<div n:foreach="$flashes as $flash" class="flash {$flash->type}">{$flash->message}</div>
@@ -108,7 +99,7 @@
 
 		<!-- Sidebar -->
 
-		<aside class="four columns">
+		<aside class="col-lg-4">
 				{if $user->isInRole('admin')}
 				{include './blocks/admin.latte', lastMatch => $lastMatch}
 				{/if}
@@ -124,37 +115,27 @@
 
 	<!-- End Main Page Content and Sidebar -->
 
+	<hr />
 	
 	<!-- Footer -->
 
   	<footer class="row">
-		<div class="twelve columns">
-  			<hr />
-	  		<div class="row">
-				<div class="six columns">
-					<p>&copy; Copyright no one at all. Go to town.</p>
-				</div>
-				<div class="six columns">
-	  				<ul class="link-list right">
-						<li><a href="#">Link 1</a></li>
-						<li><a href="#">Link 2</a></li>
-						<li><a href="#">Link 3</a></li>
-						<li><a href="#">Link 4</a></li>
-		  			</ul>
-				</div>
-			</div>
+		<div class="col-lg-12">
+  			<div class="text-center">Copyright © 2013 <a href="mailto:admin@sokol-veterov.cz">Pavel Potáček</a></div>
 		</div>
 	</footer>
 
 	<!-- End Footer -->
 	
 	{block scripts}
-	<script src="{$basePath}/js/vendor/jquery.js"></script>
-	<script src="{$basePath}/js/foundation.min.js"></script>
+	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/js/bootstrap.min.js"></script>
+	<script src="{$basePath}/js/twitter-bootstrap-hover-dropdown.min.js"></script>
 
-	<script src="{$basePath}/js/jquery-ui-1.8.17.custom.min.js"></script>
+	<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+	<script type="text/javascript" src="{$basePath}/js/nette.ajax.js"></script>
 	<script src="{$basePath}/js/netteForms.js"></script>
-	<script src="{$basePath}/js/less-1.3.0.min.js"></script>
+	<script type="text/javascript" src="{$basePath}/js/spinner.ajax.js"></script>
 	
 	<script type='text/javascript' src="{$basePath}/js/jquery-ui-timepicker-addon.js"></script>
 	<script type='text/javascript' src="{$basePath}/js/dateInput.js"></script>
@@ -163,13 +144,11 @@
 	<script type="text/javascript" src="{$basePath}/ckeditor/ckeditor.js"></script>
 	
 	<script type="text/javascript" src="{$basePath}/js/scripts.js"></script>
-	<script type="text/javascript" src="{$basePath}/js/ajax.js"></script>
-	<script>
-		$(document).foundation();
-	</script>
 	{/block}
 	
 	{include './blocks/ganalytics.latte'}
+
+	</div><!--/.container -->
 
 </body>
 </html>

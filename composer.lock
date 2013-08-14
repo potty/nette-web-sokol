@@ -3,11 +3,46 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "3f2dfabc8ad4a146de01a12f9b169190",
+    "hash": "c04af88d16691578f8f0581313f8f533",
     "packages": [
         {
+            "name": "dg/ftp-deployment",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dg/ftp-deployment.git",
+                "reference": "a638547a85a806c36543044777d2fed25cd4c288"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dg/ftp-deployment/zipball/a638547a85a806c36543044777d2fed25cd4c288",
+                "reference": "a638547a85a806c36543044777d2fed25cd4c288",
+                "shasum": ""
+            },
+            "type": "tool",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause",
+                "GPL-2.0",
+                "GPL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "David Grudl",
+                    "homepage": "http://davidgrudl.com"
+                }
+            ],
+            "description": "A tool for automated deployment of web applications to an FTP server.",
+            "homepage": "https://github.com/dg/ftp-deployment",
+            "keywords": [
+                "deployment",
+                "ftp"
+            ],
+            "time": "2013-08-07 10:56:51"
+        },
+        {
             "name": "nette/nette",
-            "version": "dev-release-2.0.x",
+            "version": "v2.0.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/nette.git",
@@ -78,6 +113,50 @@
                 "templating"
             ],
             "time": "2013-08-07 23:14:19"
+        },
+        {
+            "name": "voda/date-input",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/voda/DateInput.git",
+                "reference": "f2baf450d38eb53aa22a5dce055e46273e548e09"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/voda/DateInput/zipball/f2baf450d38eb53aa22a5dce055e46273e548e09",
+                "reference": "f2baf450d38eb53aa22a5dce055e46273e548e09",
+                "shasum": ""
+            },
+            "require": {
+                "nette/nette": "2.*",
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Vodacek\\Forms\\Controls\\DateInput": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Ondřej Vodáček",
+                    "email": "ondrej.vodacek@gmail.com"
+                }
+            ],
+            "description": "HTML 5 compatible date / time input field for Nette.",
+            "keywords": [
+                "calendar",
+                "date",
+                "form",
+                "input",
+                "nette"
+            ],
+            "time": "2013-05-14 16:06:47"
         }
     ],
     "packages-dev": [
@@ -88,7 +167,8 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
-        "nette/nette": 20
+        "voda/date-input": 20,
+        "dg/ftp-deployment": 20
     },
     "platform": {
         "php": ">= 5.3.0"

@@ -3,7 +3,7 @@
 {block content}
 
 {if $allowedEdit}
-    <div class="links"><a href="{link Article:edit $article->id}" class="button">Upravit</a></div>
+    <div class="links"><a href="{link Article:edit $article->id}" class="btn btn-default btn-small">Upravit</a></div>
 {/if}
 
 {if $article->image_id}
@@ -12,7 +12,7 @@
     {var $image = $article->category->image->path}
 {/if}
 <div class="article-full">
-    <h1>{$article->title}</h1>
+    <h1 class="page-header">{$article->title}</h1>
     <div class="info">
 	<span class="created"><strong>Vydáno: </strong>{$article->created|date:'j.n.Y H:i'}</span>
 	<span class="category"><strong>Kategorie: </strong>{$article->category->name}</span>
@@ -24,7 +24,7 @@
 
 {control comments}
 
-<h2>Přidat komentář</h2>
+<h3>Přidat komentář</h3>
 {control commentsForm}
 
 {/block}

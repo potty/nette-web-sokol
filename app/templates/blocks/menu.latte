@@ -1,32 +1,49 @@
-<ul class="top-bar">
-    
-    <li><a href="{link Homepage:}">Domů</a></li>
-    
-    <li><a href="{link Page:club}">Klub</a></li>
-    
-    <li class="has-flyout">
-	<a href="#">Tým</a>
-	<a href="#" class="flyout-toggle"><span> </span></a>
-	<ul class="flyout">
-	    <li><a href="{link Player:}">Soupiska</a></li>
-	    <li><a href="{link Match:}">Zápasy</a></li>
-	    <li><a href="{link Player:statistics}">Statistiky</a></li>
-	    {if $accessAllowed['training']}
-	    <li><a href="{link Training:}">Tréninky</a></li>
-	    <li><a href="{link Contact:}">Kontakty</a></li>
-	    {/if}
-	</ul>
-    </li>
-    
-    <li class="has-flyout">
-	<a href="#" class="drop">Soutěž</a>
-	<a href="#" class="flyout-toggle"><span> </span></a>
-	<ul class="flyout">
-	    <li><a href="{link Match:competition}">Zápasy</a></li>
-	    <li><a href="{link Match:table}">Tabulka</a></li>
-	</ul>
-    </li>
-    
-    <li class="single"><a href="http://sokol-veterov.rajce.idnes.cz/" target="_blank">Fotogalerie</a></li>
-    
-</ul>
+<div class="navbar">
+	<div class="container">
+
+		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+      		<span class="icon-bar"></span>
+      		<span class="icon-bar"></span>
+      		<span class="icon-bar"></span>
+		</button>
+	
+		<div class="nav-collapse collapse navbar-responsive-collapse">
+			<ul class="nav navbar-nav">
+			    
+			    <li><a href="{link Homepage:}">Domů</a></li>
+			    
+			    <li><a href="{link Page:club}">Klub</a></li>
+			    
+			    <li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-hover="dropdown">Tým<b class="caret"></b></a>
+					<ul class="dropdown-menu">
+					    <li><a href="{link Player:}">Soupiska</a></li>
+					    <li><a href="{link Match:}">Zápasy</a></li>
+					    <li><a href="{link Player:statistics}">Statistiky</a></li>
+					    {if $accessAllowed['training']}
+						    <li><a href="{link Training:}">Tréninky</a></li>
+						    <li><a href="{link Contact:}">Kontakty</a></li>
+					    {/if}
+					</ul>
+			    </li>
+			    
+			    <li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-hover="dropdown">Soutěž<b class="caret"></b></a>
+					<ul class="dropdown-menu">
+					    <li><a href="{link Match:competition}">Zápasy</a></li>
+					    <li><a href="{link Match:table}">Tabulka</a></li>
+					</ul>
+			    </li>
+			    
+			    <li class="single"><a href="http://sokol-veterov.rajce.idnes.cz/" target="_blank">Fotogalerie</a></li>
+			    
+			</ul>
+
+			{form searchForm class => "navbar-form form-inline pull-right"}
+				{input query class => form-control}
+				{*{input submit class => "btn btn-default"}*}
+			{/form searchForm}
+		</div>
+
+	</div>
+</div>

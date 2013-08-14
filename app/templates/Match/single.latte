@@ -4,13 +4,13 @@
 
 {if $allowedEdit}
     <div class="links">
-	<a href="{link Match:edit $match->id}" class="tiny secondary radius button">Upravit zápas</a>
+	<a href="{link Match:edit $match->id}" class="btn btn-default btn-small">Upravit zápas</a>
     </div>
 {/if}
 
 <div class="match-overview">
     
-    <table class="twelve match-table">
+    <table class="table table-bordered">
     <thead>
 	<tr>
 	    <th>{$match->date|date:'d.m.Y H:i'}</th>
@@ -25,19 +25,19 @@
 	</tr>
     </table>
     
-    <table class="match-table">
+    <table class="table table-bordered">
 	<tr>
 	    <th colspan="2">Góly</th>
 	</tr>
 	{foreach $goals as $goal}
 	<tr>
-	    <td class="minute"><img src="{$basePath}/images/match/goal.png" alt="Gól" />{$goal->minute}.</td>
+	    <td class="minute"><img src="{$basePath}/images/match/goal.png" alt="Gól" /> {$goal->minute}.</td>
 	    <td><a href="{link Player:single $goal->player->id}">{$goal->player->name} {$goal->player->surname}</a> {if $goal->penalty}(z pen.){/if} {if $goal->assist}(A: <a href="{link Player:single $goal->ref('player', 'assist')->id}">{$goal->ref('player', 'assist')->name} {$goal->ref('player', 'assist')->surname}</a>){/if}</td>
 	</tr>
 	{/foreach}
     </table>
     
-    <table class="match-table">
+    <table class="table table-bordered">
 	<tr>
 	    <th colspan="2">Karty</th>
 	</tr>
@@ -48,13 +48,13 @@
 	    {var $color = 'redcard'}
 	{/if}
 	<tr>
-	    <td class="minute"><img src="{$basePath}/images/match/{$color}.png" alt="Karta" />{if $card->minute}{$card->minute}.{/if}</td>
+	    <td class="minute"><img src="{$basePath}/images/match/{$color}.png" alt="Karta" /> {if $card->minute} {$card->minute}.{/if}</td>
 	    <td><a href="{link Player:single $card->player->id}">{$card->player->name} {$card->player->surname}</a></td>
 	</tr>
 	{/foreach}
     </table>
     
-    <table class="match-table">
+    <table class="table table-bordered">
 	<tr>
 	    <th>Sestava</th>
 	</tr>
@@ -78,11 +78,11 @@
     {if $article}
 	{if $allowedEditArticle}
 	<div class="links">
-	    <a href="{link Article:edit $article->id}" class="tiny secondary radius button">Upravit článek</a>
+	    <a href="{link Article:edit $article->id}" class="btn btn-default btn-small">Upravit článek</a>
 	</div>
 	{/if}
 	<div class="article-full">
-	    <h1>{$article->title}</h1>
+	    <h1 class="page-header">{$article->title}</h1>
 	    <div class="info">
 		<span class="created"><strong>Vydáno: </strong>{$article->created|date:'j.n.Y H:i'}</span>
 		<span class="category"><strong>Kategorie: </strong>{$article->category->name}</span>
@@ -92,7 +92,7 @@
 	</div>
 	{control comments}
 
-	<h2>Přidat komentář</h2>
+	<h3>Přidat komentář</h3>
 	{control commentsForm}
     
     {/if}

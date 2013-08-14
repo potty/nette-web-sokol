@@ -1,12 +1,11 @@
 {var $fullName = $player->name . ' ' . $player->surname}
 {var $title = $fullName}
 
-{block head}
-<script type='text/javascript' src="{$basePath}/js/jquery.ba-hashchange.min.js"></script>
-<script type='text/javascript' src="{$basePath}/js/jquery.easytabs.min.js"></script>
-{/block}
-
 {block content}
+
+{if $allowedEdit}
+	<div class="links"><a href="{link Player:edit $player->id}" class="btn btn-default btn-small">Upravit</a></div>
+{/if}
 
 {if $player->photo}
     {var $photo = $fullName}
@@ -15,91 +14,99 @@
 {/if}
 
 <div class="player-profile">
-    <h1>{$fullName}</h1>
+    <h1 class="page-header">{$fullName}</h1>
     <div class="row">
-	<div class="six columns">
-		<img src="{$basePath}/images/players/{$photo|webalize}.png" alt="{$fullName}" />
-	</div>
-	<div class="six columns">
-	    <table class="twelve">
-			<tr><td class="title"><strong>Datum narození:</strong></td><td>{$player->birth|date:'d.m.Y'}</td></tr>
-			<tr><td class="title"><strong>Věk:</strong></td><td>{$player->birth|age}</td></tr>
-			<tr><td class="title"><strong>Pozice:</strong></td><td>{$player->position->name}</td></tr>
-			<tr><td class="title"><strong>Klub:</strong></td><td>{ifset $team->name}{$team->name}{/ifset}</td></tr>
-	    </table>
-	</div>
+
+		<div class="col-lg-6">
+			<img src="{$basePath}/images/players/{$photo|webalize}.png" alt="{$fullName}" />
+		</div>
+
+		<div class="col-lg-6">
+			<table class="table table-bordered">
+				<tr><td class="title"><strong>Datum narození:</strong></td><td>{$player->birth|date:'d.m.Y'}</td></tr>
+				<tr><td class="title"><strong>Věk:</strong></td><td>{$player->birth|age}</td></tr>
+				<tr><td class="title"><strong>Pozice:</strong></td><td>{$player->position->name}</td></tr>
+				<tr><td class="title"><strong>Klub:</strong></td><td>{ifset $team->name}{$team->name}{/ifset}</td></tr>
+			</table>
+		</div>
+
     </div>
     
-    <div id="tab-container" class="tab-container">
-	<dl class="tabs">
-	    <dd class="active"><a href="#tab-matches">Zápasy</a></dd>
-	    {if $allowedViewTraining}<dd><a href="#tab-trainings">Tréninky</a></dd>{/if}
-	</dl>
-	<ul class="tabs-content">
-	    <li id="tab-matchesTab" class="active">
-		<h5>Přehled zápasů - {$currentSeason}</h5>
-		<table class="twelve">
-			<thead>
-				<tr>
-					<th></th>
-					<th></th>
-					<th></th>
-					<th></th>
-					<th><abbr title="Minuty">M</abbr></th>
-					<th><abbr title="Góly">G</abbr></th>
-					<th><abbr title="Asistence">A</abbr></th>
-					<th><abbr title="Žluté karty">ŽK</abbr></th>
-					<th><abbr title="Červené karty">ČK</abbr></th>
-				</tr>
-			</thead>
-			<tbody>
-			{foreach $matches as $match}
-				<tr>
-					<td>{$match->date|date:'d.m.Y'}</td>
-					<td>{$match->competition->name}</td>
-					<td>{$match->ref('team', 'home_id')->name} - {$match->ref('team', 'away_id')->name}</td>
-					<td><a href="{link Match:single $match->id}">{$match->score_home}:{$match->score_away}</a></td>
-					<td>{$minutes[$match->id]}</td>
-					<td>{$goals[$match->id]}</td>
-					<td>{$assists[$match->id]}</td>
-					<td>{$yellow_cards[$match->id]}</td>
-					<td>{$red_cards[$match->id]}</td>
-				</tr>
-			{/foreach}
-			</tbody>
-		</table>
-	    </li>
-	    
-	    {if $allowedViewTraining}
-	    <li id="tab-trainingsTab">
-		<h2>Přehled tréninků - {$currentSeason}</h2>
-		<div>
-		    <div><strong>Celkem tréninků:</strong> {$trainingsTotal}</div>
-		    <div><strong>Počet účastí:</strong> {$trainingsPartNum} ({$trainingsPercentage|number}%)</div>
-		</div>
-		<table class="twelve">
-			<thead>
-				<tr>
-					<th>Datum</th>
-					<th>Popis</th>
-					<th>Účast</th>
-				</tr>
-			</thead>
-			<tbody>
-			{foreach $trainings as $training}
-			<tr n:class="$trainingParticipate[$training->id] ? participating : not-participating">
-			    <td><a href="{link Training:single $training->id}">{$training->date|date:'d.m.Y H:i'}</a></td>
-			    <td>{$training->title}</td>
-			    <td>{$trainingParticipate[$training->id] ? 'Ano' : 'Ne'}</td>
-			</tr>
-			{/foreach}
-			</tbody>
-		</table>
-	    </li>
-	    {/if}
-	    
-	</ul>
-    </div>
+    <div class="tabbable">
+
+		{* Tabs *}
+		<ul class="nav nav-tabs">
+			<li class="active"><a href="#tab-matches" data-toggle="tab">Zápasy</a></li>
+			<li n:if="$allowedViewTraining"><a href="#tab-trainings" data-toggle="tab">Tréninky</a></li>
+		</ul>
+
+		{* Tab content *}
+		<div class="tab-content">
+
+			{* Tab matches *}
+			<div id="tab-matches" class="tab-pane active">
+				<h2>Přehled zápasů - {$currentSeason}</h2>
+				<table class="table table-condensed">
+					<thead>
+						<tr>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th><abbr title="Minuty">M</abbr></th>
+							<th><abbr title="Góly">G</abbr></th>
+							<th><abbr title="Asistence">A</abbr></th>
+							<th><abbr title="Žluté karty">ŽK</abbr></th>
+							<th><abbr title="Červené karty">ČK</abbr></th>
+						</tr>
+					</thead>
+					<tbody>
+					{foreach $matches as $match}
+						<tr>
+							<td>{$match->date|date:'d.m.Y'}</td>
+							<td>{$match->competition->name}</td>
+							<td>{$match->ref('team', 'home_id')->name} - {$match->ref('team', 'away_id')->name}</td>
+							<td><a href="{link Match:single $match->id}">{$match->score_home}:{$match->score_away}</a></td>
+							<td>{$minutes[$match->id]}</td>
+							<td>{$goals[$match->id]}</td>
+							<td>{$assists[$match->id]}</td>
+							<td>{$yellow_cards[$match->id]}</td>
+							<td>{$red_cards[$match->id]}</td>
+						</tr>
+					{/foreach}
+					</tbody>
+				</table>
+			</div>
+
+			{* Tab trainings *}
+			<div n:if="$allowedViewTraining" id="tab-trainings" class="tab-pane">
+				<h2>Přehled tréninků - {$currentSeason}</h2>
+				<div>
+					<div><strong>Celkem tréninků:</strong> {$trainingsTotal}</div>
+					<div><strong>Počet účastí:</strong> {$trainingsPartNum} ({$trainingsPercentage|number}%)</div>
+				</div>
+				<table class="table table-condensed">
+					<thead>
+						<tr>
+							<th>Datum</th>
+							<th>Popis</th>
+							<th>Účast</th>
+						</tr>
+					</thead>
+					<tbody>
+					{foreach $trainings as $training}
+					<tr n:class="$trainingParticipate[$training->id] ? participating : not-participating">
+						<td><a href="{link Training:single $training->id}">{$training->date|date:'d.m.Y H:i'}</a></td>
+						<td>{$training->title}</td>
+						<td>{$trainingParticipate[$training->id] ? 'Ano' : 'Ne'}</td>
+					</tr>
+					{/foreach}
+					</tbody>
+				</table>
+			</div>
+
+		</div><!-- /.tab-content -->
+    </div><!-- /.tabbable -->
     
 </div>
 

@@ -2,14 +2,15 @@
 
 use Nette\Application\UI\Form;
 use Nette\Image;
+use Vodacek\Forms\Controls\DateInput;
 
 /**
  * Description of PlayerPresenter
  *
  * @author Potty
  */
-class PlayerPresenter extends BasePresenter {
-
+class PlayerPresenter extends BasePresenter
+{
 	private $player;
     
 	/**
@@ -28,6 +29,7 @@ class PlayerPresenter extends BasePresenter {
 		$result = $this->model->getSeasons()->select('name')->where('id', $this->currentSeason)->fetch();
 		$this->seasonName = $result['name'];
 		$this->template->allowedViewTraining = $this->isUserAllowedToAction('training', 'default');
+		$this->template->allowedEdit = $this->isUserAllowedToAction('player', 'edit');
 	}
 	
 	
@@ -38,6 +40,18 @@ class PlayerPresenter extends BasePresenter {
 		$this->template->defenders = $this->getPlayersByFilter('Věteřov', 'obránce');
 		$this->template->midfielders = $this->getPlayersByFilter('Věteřov', 'záložník');
 		$this->template->forwards = $this->getPlayersByFilter('Věteřov', 'útočník');
+	}
+
+
+
+	public function actionEdit($id)
+	{
+		$this->player = $this->model->getPlayers()->find($id)->fetch();
+		if ($this->player === FALSE) {
+			$this->setView('notFound');
+		}
+
+		$this['playerForm']->setDefaults($this->player->toArray());
 	}
 	
 	
@@ -151,7 +165,7 @@ class PlayerPresenter extends BasePresenter {
 	 * Add player form
 	 * @return Form 
 	 */
-	protected function createComponentPlayerAddForm()
+	protected function createComponentPlayerForm()
 	{
 		$form = new Form();
 		
@@ -161,17 +175,17 @@ class PlayerPresenter extends BasePresenter {
 		$form->addText('surname', 'Příjmení:', 40, 100)
 			->addRule(Form::FILLED, 'Je nutné zadat příjmení.');
 		
-		$form->addText('birth', 'Datum narození:', 40, 100);
+		$form->addDate('birth', 'Datum narození:', DateInput::TYPE_DATE);
 		
-		$form->addSelect('positionId', 'Pozice:', $this->model->getPositions()->fetchPairs('id', 'name'))
+		$form->addSelect('position_id', 'Pozice:', $this->model->getPositions()->fetchPairs('id', 'name'))
 			->setPrompt('- Vyberte -')
 			->addRule(Form::FILLED, 'Je nutné vybrat pozici.');
 		
 		$form->addText('photo', 'Foto:', 40, 100);
 		
-		$form->addSubmit('create', 'Vytvořit');
+		$form->addSubmit('submit', 'Uložit');
 		
-		$form->onSuccess[] = callback($this, 'playerAddFormSubmitted');
+		$form->onSuccess[] = callback($this, 'playerFormSubmitted');
 		
 		return $form;
 	}
@@ -182,18 +196,28 @@ class PlayerPresenter extends BasePresenter {
 	 * Add player process
 	 * @param Form $form 
 	 */
-	public function playerAddFormSubmitted(Form $form)
+	public function playerFormSubmitted(Form $form)
 	{
+		$values = $form->values;
+		$playerId = $this->getParameter('id');
+
 		$data = array(
-		    'name' => $form->values->name,
-		    'surname' => $form->values->surname,
-		    'position_id' => $form->values->positionId,
+		    'name' => $values->name,
+		    'surname' => $values->surname,
+		    'position_id' => $values->position_id,
 		);
-	
-		if ($form->values->birth != '') $data['birth'] = $form->values->birth;
-		if ($form->values->photo != '') $data['photo'] = $form->values->photo;
-		$this->model->getPlayers()->insert($data);
-		$this->flashMessage('Hráč přidán.', 'success');
+		if ($form->values->birth != '') $data['birth'] = $values->birth;
+		if ($form->values->photo != '') $data['photo'] = $values->photo;
+
+		if ($playerId) {
+			// update
+			$this->model->getPlayers()->find($playerId)->update($data);
+		} else {
+			// create
+			$this->model->getPlayers()->insert($data);
+		}
+
+		$this->flashMessage('Hráč uložen.', 'success');
 		$this->redirect('this');
 	}
     

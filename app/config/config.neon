@@ -15,6 +15,7 @@ common:
 
 	nette:
 		session:
+			autoStart: yes
 			expiration: 30 days
 
 

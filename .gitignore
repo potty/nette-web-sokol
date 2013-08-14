@@ -11,5 +11,6 @@ vendor/*
 !.htaccess
 !web.config
 app/config/config.local.neon
+/deployment.*
 
 www/images/thumbs/*
