@@ -71,8 +71,9 @@ class PlayerPresenter extends BasePresenter
 		$this->template->player = $this->player;
 		$teamId = $this->model->getTeamsPlayers()->select('team_id')->where('player_id = ? AND season_id = ?', $this->player->id, $this->currentSeason)->fetch();
 
+		\Nette\Diagnostics\Debugger::barDump($teamId);
 		// Player is registered for current season
-		if ($teamId !== NULL) {
+		if ($teamId) {
 			$this->template->team = $this->model->getTeams()->find($teamId['team_id'])->fetch();
 			$matches = $this->model->getMatches()
 				->where('(home_id = ? OR away_id = ?) AND played = ? AND competition.name = ? AND season_id = ?', $teamId['team_id'], $teamId['team_id'], true, 'IV. třída', $this->currentSeason)
