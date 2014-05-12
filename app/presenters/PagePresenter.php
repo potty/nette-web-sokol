@@ -63,6 +63,8 @@ class PagePresenter extends BasePresenter {
 			->setRequired('Vyplňte svůj e-mail.')
 			->addRule(Form::EMAIL, 'Zadejte platný e-mail.');
 
+		$form->addAntispam();
+
 		$form->addSubmit('save', 'Odeslat registraci');
 
 		$form->onSuccess[] = callback($this, 'registerFormSubmitted');
